@@ -1,5 +1,5 @@
 # molino
-<title>"El Molino" website</title>
+<h1>"El Molino" website</h1>
 <h2>This website is made for the restaurant "El Molino".</h2>
 <h4>The visitors can do the following requests:</h4>
 <h5>GET:</h5>

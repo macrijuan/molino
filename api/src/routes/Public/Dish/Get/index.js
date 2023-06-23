@@ -2,9 +2,8 @@ const { Router } = require('express');
 const router = Router();
 const datatype = require("./Controller/dataType");
 const clauseSetter = require("./Controller/clauseSetter");
-const {Op}=require("sequelize");
 const {Dish}=require("../../../../db");
-const {notFound, unknown, notFoundWith, errJSON} = require("../../../error");
+const {notFound, unknown, errJSON} = require("../../../error");
 
 router.get("/get_dishes", async(req,res)=>{
 	try{

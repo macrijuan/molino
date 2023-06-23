@@ -3,7 +3,7 @@ const router = Router();
 const format = require("./Controller/format");
 const existing = require("./Controller/existing");;
 const{User}=require("../../../../db");
-const {notFound, unknown} = require("../../../error");
+const {notFound, unknown, errJSON} = require("../../../error");
 
 router.put("/update_user/:id",
   (req,res,next)=>{res.locals.params=req.params; next();},
@@ -17,7 +17,7 @@ router.put("/update_user/:id",
           .then(user=>{
             res.json(user);
           }))
-          .catch(()=>{res.status(403).json({errors:{email:["This email is not valid."]}})});
+          .catch(()=>{res.status(403).json(errJSON("email", "This email isn't valid."))});
         }else{
           res.status(404).json({errors:{not_found:notFound("User")}});
         };

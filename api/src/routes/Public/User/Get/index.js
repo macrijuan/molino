@@ -5,14 +5,12 @@ const {notFound, unknown} = require("../../../error.js");
 
 router.get("/get_users", async(req,res)=>{
   try{
-    User.findAll()
-    .then(users=>{
-      if(users && users.length){
-        const data=users.map(e=>{
-          const {id, email, first_name, last_name}=e;
-          return {id, email, first_name, last_name};
-        });
-        res.status(200).json(data);
+    User.findAndCountAll({
+      attributes:{exclude:["password"]},
+      limit:req.query.perPage, offset:req.query.index
+    }).then(users=>{
+      if(users.rows.length){
+        res.status(200).json(users);
       }else{
         res.status(404).json({errors:{not_found:notFound("Users")}});
       };

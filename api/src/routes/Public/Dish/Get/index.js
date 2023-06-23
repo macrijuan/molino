@@ -43,7 +43,6 @@ datatype,
 clauseSetter,
 async(req,res)=>{
 	try{
-		console.log(req.body);
 		Dish.findAndCountAll({
 			where:res.locals.dataToMatch,
 			limit:req.query.perPage,
@@ -52,7 +51,7 @@ async(req,res)=>{
 		.then((result)=>{
 			res.status(200).json(result);
 		}).catch(()=>{
-			res.status(404).json(errJSON("not_found", notFound("Dish")));
+			res.status(404).json(errJSON("not_found", notFound("Dish/es")));
 		});
 	}catch(err){
 		console.log(err);

@@ -1,0 +1,4 @@
+CANT DE PAGS = count : elem por pag
+INDEX (page) = perPage x 0 --> 1er pag
+               perPage x 1 --> 2da pag
+               perPage x 2 --> 3er pag

@@ -4,11 +4,6 @@ module.exports = sequelize=>{
     name:{
       type:STRING
     },
-    user:{
-      type:INTEGER
-      // type:UUID
-      
-    },
     customers:{
       type:INTEGER
       

@@ -1,14 +1,15 @@
-const { DataTypes } = require('sequelize');
+const { STRING, INTEGER, ENUM, ARRAY } = require('sequelize');
+const { arrRemover, setUpdatable } = require('../formatter');
 module.exports = (sequelize) => {
   sequelize.define('inventory', {
     // id:{
-    //   type: DataTypes.UUID,
+    //   type: UUID,
     //   primaryKey:true,
     //   allowNull: false,
     //   defaultValue:UUIDV4
     // },
     name: {
-      type: DataTypes.STRING,
+      type: STRING,
       allowNull: false,
       unique:true,
       set(value){
@@ -19,7 +20,7 @@ module.exports = (sequelize) => {
       }
     },
     quantity:{
-      type: DataTypes.INTEGER,
+      type: INTEGER,
       allowNull:false,
       validate:{
         max:100000,
@@ -27,14 +28,23 @@ module.exports = (sequelize) => {
       }
     },
     unit:{
-      type:DataTypes.ENUM("Kg", "g", "oz", "ton", "lb", "u"),
+      type:ENUM("Kg", "g", "oz", "ton", "lb", "u"),
       allowNull:false
     },
     class:{
-      type: DataTypes.ENUM("Vegetable", "Animal", "Mixed", "Furniture", "Tableware", "Dinner set", "Other"),
+      type: ENUM("Vegetable", "Animal", "Mixed", "Furniture", "Tableware", "Dinner set", "Other"),
       allowNull:false,
+    },
+    updatable:{
+      type:ARRAY(STRING),
+      defaultValue:["name", "quantity", "unit", "class"],
+      set(value){
+        this.setDataValue("updatable", setUpdatable(value,["name", "quantity", "unit", "class"]));
+      }
     }
   },{
     timestamps:false
   });
 };
+
+// arrRemover(["id"], Object.keys(this.rawAttributes))

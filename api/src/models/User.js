@@ -1,14 +1,14 @@
-const { DataTypes } = require('sequelize');
+const { STRING, BOOLEAN, ARRAY } = require('sequelize');
 module.exports = (sequelize) => {
   sequelize.define('user', {
     // id:{
-    //   type: DataTypes.UUID,
+    //   type: UUID,
     //   primaryKey:true,
     //   allowNull: false,
     //   defaultValue:UUIDV4
     // },
     email:{
-      type:DataTypes.STRING,
+      type:STRING,
       allowNull: false,
       unique:true,
       validate:{
@@ -17,14 +17,14 @@ module.exports = (sequelize) => {
       }
     },
     password:{
-      type:DataTypes.STRING,
+      type:STRING,
       allowNull: false,
       validate:{
         len:[8,35]
       }
     },
     first_name: {
-      type: DataTypes.STRING,
+      type: STRING,
       allowNull: false,
       set(value){
         this.setDataValue("first_name", value.toUpperCase());
@@ -34,7 +34,7 @@ module.exports = (sequelize) => {
       }
     },
     last_name:{
-      type:DataTypes.STRING,
+      type:STRING,
       allowNull: false,
       set(value){
         this.setDataValue("last_name", value.toUpperCase());
@@ -44,9 +44,15 @@ module.exports = (sequelize) => {
       }
     },
     banned:{
-      type:DataTypes.BOOLEAN,
+      type:BOOLEAN,
       allowNull:false,
       defaultValue: false
+    },
+    updatable:{
+      type:ARRAY(STRING),
+      set(value){
+        this.setDataValue("updatable", setUpdatable(value, null));
+      }
     }
   },{
     timestamps:false

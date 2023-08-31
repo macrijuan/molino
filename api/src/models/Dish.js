@@ -1,17 +1,17 @@
-const { DataTypes } = require('sequelize');
+const { STRING, ARRAY, BOOLEAN, TEXT, INTEGER, ENUM } = require('sequelize');
 const {arrayValidator} = require("../models_validations");
-const {dobleSpaceEraser, nameFormatter}=require("../formatter");
+const {dobleSpaceEraser, setUpdatable, arrRemover}=require("../formatter");
 
 module.exports = (sequelize) => {
   sequelize.define('dish', {
     // id:{
-    //   type: DataTypes.UUID,
+    //   type: UUID,
     //   primaryKey:true,
     //   allowNull: false,
     //   defaultValue:UUIDV4
     // },
     name: {
-      type: DataTypes.STRING,
+      type: STRING,
       allowNull: false,
       set(value){
         this.setDataValue("name", value = dobleSpaceEraser(value));
@@ -23,7 +23,7 @@ module.exports = (sequelize) => {
     },
 
     ingredients:{
-      type: DataTypes.ARRAY(DataTypes.STRING),
+      type: ARRAY(STRING),
       allowNull: false,
       set(value){
         this.setDataValue("ingredients", value = dobleSpaceEraser(value));
@@ -35,7 +35,7 @@ module.exports = (sequelize) => {
     },
 
     diets:{
-      type: DataTypes.ARRAY(DataTypes.STRING),
+      type: ARRAY(STRING),
       allowNull: false,
       set(value){
         this.setDataValue("diets", value = dobleSpaceEraser(value));
@@ -47,11 +47,11 @@ module.exports = (sequelize) => {
     },
 
     // nutrients:{
-    //   type: DataTypes.JSON,
+    //   type: JSON,
     //   allowNull: false,
     // },
     description:{
-      type: DataTypes.STRING,
+      type: STRING,
       set(value){
         this.setDataValue("description", value = dobleSpaceEraser(value));
       },
@@ -61,7 +61,7 @@ module.exports = (sequelize) => {
     },
 
     image:{
-      type:DataTypes.TEXT,
+      type:TEXT,
       validate:{
         len:[0,10000],
         isString:function(value){if(typeof value !== "string") throw new Error("Wrong data type.")}
@@ -69,14 +69,28 @@ module.exports = (sequelize) => {
     },
 
     taste:{
-      type:DataTypes.ENUM("salty", "sweet", "sour", "bittersweet", "bitter", "spicy"),
+      type:ENUM("salty", "sweet", "sour", "bittersweet", "bitter", "spicy"),
       allowNull:false
     },
-
+    price:{
+      type:INTEGER,
+      validate:{
+        max:100000,
+        min:0
+      }
+    },
     available:{
-      type:DataTypes.BOOLEAN,
+      type:BOOLEAN,
       allowNull:false,
       defaultValue:true
+    },
+    updatable:{
+      type:ARRAY(STRING),
+      defaultValue:["name", "ingredients", "diets", "description", "image", "taste", "price", "available"],
+      set(value){
+        // const props = Object.keys(this.rawAttributes);
+        this.setDataValue("updatable", setUpdatable(value, arrRemover(["id"], Object.keys(this.rawAttributes))));
+      }
     }
   },{
     timestamps:false

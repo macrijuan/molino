@@ -14,7 +14,7 @@ module.exports = {
   maxLength: function(data, max){return `The ${data} can't be longer than ${max} characters.`},
   atLeastOne: function(data, data2){return`The ${data} must contain at least one ${data2}.`;},
   isMandatory: function(data){return`The ${data} is mandatory.`;},
-  wrongCharType: function(dataName, allowedChars, arrElement){return`The ${dataName} can contain only ${allowedChars}.`;},
+  wrongCharType: function(dataName, allowedChars){return`The ${dataName} can contain only ${allowedChars}.`;},
   wrongCharTypeArr: function(dataName, allowedChars, arrElement){return`Each ${dataName} can contain only ${allowedChars}. ${dataName.replace(dataName[0], dataName[0].toUpperCase())}: ${arrElement}`;},
-  wrongNumberSize: function(dataName, max, min){return`The ${dataName} must be bigger than ${min} and smaller than ${max}`;}
+  wrongNumberSize: function(dataName, min, max){return`The ${dataName} must be bigger than ${min} and smaller than ${max}`;}
 };

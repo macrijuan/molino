@@ -1,13 +1,15 @@
 const { Router } = require('express');
 const router = Router();
-const {getDishes, getDish}=require("./controller");
+const {Dish}=require("../../../../db");
 const errors = require("../../../error");
+const { setUpdatables }=require("../../../routeFormatter");
 
 router.get("/get_dishes", async(req,res)=>{
 	try{
-		await getDishes().then((result)=>{
-			if(result&&result.length){
-				res.status(200).json(result);
+		Dish.findAndCountAll({offset:req.query.index, limit:req.query.perPage, attributes:{exclude:["updatable"]}})
+		.then((result)=>{
+			if(result.rows&&result.rows.length){
+				setUpdatables(result, Dish);res.status(200).json(result);
 			}else{
 				res.status(404).json({errors:{not_found:errors.notFound("Dish")}});
 			};
@@ -20,8 +22,9 @@ router.get("/get_dishes", async(req,res)=>{
 
 router.get("/get_dish/:id", async(req,res)=>{
 	try{
-		getDish(req.params.id).then((result)=>{
-			if(result&&result.available){
+		Dish.findByPk(req.params.id)
+		.then((result)=>{
+			if(result){
 				res.status(200).json(result);
 			}else{
 				res.status(404).json({errors:{not_found:errors.notFound("Dish")}});

@@ -5,10 +5,11 @@ const {Op}=require("sequelize");
 
 router.use((req,res,next)=>{
   res.locals.dataToMatch = {};
-  if(req.body.taste) res.locals.dataToMatch.taste = req.body.taste;
-  if(req.body.name) res.locals.dataToMatch.name = {[Op.substring]:req.body.name};
-  if(req.body.diets.length) res.locals.dataToMatch.diets = {[Op.contains]:req.body.diets};
-  if(req.body.ingredients.length) res.locals.dataToMatch.ingredients = {[Op.contains]:req.body.ingredients};
+  if(req.query.taste) res.locals.dataToMatch.taste = req.query.taste;
+  if(req.query.name) res.locals.dataToMatch.name = {[Op.substring]:req.query.name};
+  if(req.query.diets) res.locals.dataToMatch.diets = {[Op.contains]:req.query.diets.split(",")};
+  if(req.query.ingredients) res.locals.dataToMatch.ingredients = {[Op.contains]:req.query.ingredients.split(",")};
+  console.log(req.query.ingredients)
   next();
 });
 

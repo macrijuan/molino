@@ -12,6 +12,7 @@ router.post("/post_user", format, existing, async(req,res)=>{
     User.create({ email, password, first_name:dobleSpaceEraser(first_name), last_name:dobleSpaceEraser(last_name) })
     .then((newAdmin=>{
       delete newAdmin.dataValues.password;
+      delete newAdmin.dataValues.updatable;
       res.status(200).json(newAdmin.dataValues);
     }));
   }catch(err){

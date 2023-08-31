@@ -29,11 +29,14 @@ sequelize.models = Object.fromEntries(capsEntries);
 
 // En sequelize.models están todos los modelos importados como propiedades
 // Para relacionarlos hacemos un destructuring
-const { Moderator, Diet, Dish, Ingredient, User, Reservation } = sequelize.models;
+const { Moderator, Diet, Dish, Ingredient, User, Reservation, Table } = sequelize.models;
 
 // Aca vendrian las relaciones
-User.belongsToMany(Reservation, {through:"user_reservation", timestamps:false});
-Reservation.belongsToMany(User, {through:"user_reservation", timestamps:false});
+Reservation.hasOne(User);
+User.hasMany(Reservation);
+
+Reservation.hasOne(Table);
+Table.hasMany(Reservation);
 
 // Check the exisisting models: uncoment line below.
 //console.log(sequelize.models);

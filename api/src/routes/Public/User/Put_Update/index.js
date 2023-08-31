@@ -12,9 +12,11 @@ router.put("/update_user/:id",
     User.findByPk(req.params.id)
       .then(user=>{
         if(user){
+          if(req.body.banned)delete req.body.banned;
           user.update(req.body)
           .then(update=>update.save()
           .then(user=>{
+            delete user.dataValues.updatable;
             res.json(user);
           }))
           .catch(()=>{res.status(403).json(errJSON("email", "This email isn't valid."))});

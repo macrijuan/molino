@@ -9,8 +9,9 @@ async(req,res)=>{
     Reservation.findAndCountAll({
       offset:0,limit:3,
       where:{
-        user:req.params.user
-      }
+        userId:req.params.user
+      },
+      attributes:{exclude:["updatable"]}
     }).then(resr=>{
       if(!resr.rows.length){
         res.status(404).json(errJSON("not_found", notFound("Reservations")));
@@ -31,7 +32,8 @@ async(req,res)=>{
       where:{
         user:req.params.user,
         ticket:req.params.ticket
-      }
+      },
+      attributes:{exclude:["updatable"]}
     })
     .then(resr=>{
       if(!resr){

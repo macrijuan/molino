@@ -2,16 +2,17 @@ const { Router } = require('express');
 const router = Router();
 const { User } = require("../../../../db");
 const {notFound, unknown} = require("../../../error.js");
+const { setUpdatable }=require("../../../../formatter");
 
 router.get("/user/get_users", async(req,res)=>{
   try{
     User.findAndCountAll({
-      attributes:{exclude:["password"]},
+      attributes:{exclude:["password", "updatable"]},
       limit:req.query.perPage, offset:req.query.index
     })
     .then(users=>{
       if(users.rows.length){
-        res.status(200).json(users);
+        setUpdatable(users, User); res.status(200).json(users);
       }else{
         res.status(404).json({errors:{not_found:notFound("Users")}});
       };

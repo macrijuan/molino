@@ -8,14 +8,13 @@ router.delete("/delete_reservation/:user/:ticket",
   try{
     Reservation.findOne({
       where:{
-        user: req.params.user,
+        userId: req.params.user,
         ticket: req.params.ticket
       }
-    }).then(resr=>{
+    }).then(async resr=>{
       if(resr){
-        console.log(resr.deletion_code);
         clearTimeout(resr.deletion_code);
-        resr.destroy({force:true})
+        await resr.destroy({force:true})
         .then(()=>{res.json(errJSON("message", `The reservation for the date ${resr.date} has been canceled.`))});
       }else{
         res.status(404).json(errJSON("not_found", notFound("Reservation")));

@@ -5,9 +5,10 @@ const {errJSON, unknown}=require("../../../error");
 
 router.use(async(req,res,next)=>{
   try{
-    Reservation.findAll({
+    Reservation.findAndCountAll({
+      limit:4, offset:0,
       where:{
-        user:res.locals.user
+        userId:res.locals.user
       }
     }).then(resr=>{
       if(resr.length>=3){

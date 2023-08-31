@@ -1,6 +1,6 @@
 const {Router}=require("express");
 const router = Router();
-const {unknown} = require("../../../../error");
+const {unknown, errJSON} = require("../../../../error");
 const{emailValidator,passwordValidator,namesValidator}=require("../../validation");
 
 router.use(async(req, res, next)=>{
@@ -16,10 +16,10 @@ router.use(async(req, res, next)=>{
       res.status(403).json({errors:res.locals.errors});
     }else{
       next();
-    }
+    };
   }catch(err){
     console.log(err);
-    res.status(500).json({errors:{unknown:unknown}});
+    res.status(500).json(errJSON("unknown", unknown));
   };
 });
 

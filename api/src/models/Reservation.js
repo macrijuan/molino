@@ -1,5 +1,5 @@
 const {timeValidator}=require("../models_validations");
-const {STRING, INTEGER, UUID, UUIDV4, TIME, BOOLEAN, DATE, ENUM, DATEONLY}=require("sequelize");
+const {STRING, INTEGER, UUID, UUIDV4, TIME, BOOLEAN, DATE, ENUM, DATEONLY, ARRAY}=require("sequelize");
 const { dateValidator } = require("../routes/Public/Reservation/validation");
 module.exports= (sequelize)=>{
   sequelize.define("reservation",{
@@ -11,20 +11,9 @@ module.exports= (sequelize)=>{
       allowNull: false,
       // defaultValue:UUIDV4
     },
-    table:{
-      type: INTEGER,//STRING
-      validate:{
-        // len:[0,3]
-        max:999,
-        min:1
-      }
-    },
     date:{
       type: DATE,
-      allowNull:false,
-      validate:{
-        dateValidation: function(value){dateValidator(value)}
-      }
+      allowNull:false
     },
     day:{
       type: DATEONLY,
@@ -44,10 +33,6 @@ module.exports= (sequelize)=>{
         if(this.date.getHours()<12){return "am"}else{return "pm"};
       },
     },
-    user:{
-      type:INTEGER,
-      allowNull:false
-    },
     expired:{
       type: BOOLEAN,
       defaultValue:false,
@@ -55,10 +40,15 @@ module.exports= (sequelize)=>{
     },
     deletion_code:{
       type: INTEGER,
-      // allowNull:false
+    },
+    updatable:{
+      type:ARRAY(STRING),
+      set(value){
+        this.setDataValue("updatable", setUpdatable(value, null));
+      }
     }
   },
   {
-    updatedAt:false
-  })
+    timestamps:false
+  });
 };

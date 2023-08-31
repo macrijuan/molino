@@ -1,24 +1,25 @@
 const {Router}=require("express");
 const router = Router();
 const {Inventory}=require("../../../../../db");
-const {unknown, existing, equalToCurent}=require("../../../../error");
+const {unknown, existing, equalToCurent, errJSON}=require("../../../../error");
 
-router.use(async (req,res)=>{
+router.use(async (req,res, next)=>{
   try{
-    Inventory.findOne({
-      where:{name:req.name}
-    })
-    .then(element=>{
-      if(element){
-        if(element.id==res.locals.params.id){
-          res.status(409).json(equalToCurent("name"));
+    if(req.body.name){
+      Inventory.findOne({
+        where:{name:req.body.name}
+      }).then(element=>{
+        if(element){
+          if(element.id===parseInt(res.locals.id)){
+            res.json(errJSON("name", equalToCurent("name")));
+          }else{ 
+            res.json(errJSON("name", existing("name")));
+          };
         }else{
-          res.status(409).json(existing("name"));
+          next();
         };
-      }else{
-        next();
-      };
-    });
+      });
+    }else next();
   }catch(err){
     res.status(500).json({errors:{unknown:unknown}});
   };

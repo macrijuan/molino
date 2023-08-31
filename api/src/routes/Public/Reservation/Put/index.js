@@ -16,7 +16,7 @@ async(req,res)=>{
       if(resr){
         resr.update(req.body)
         .then(async resr=>{
-          resr.save().then(resr=>{ res.json(resr); });
+          resr.save().then(resr=>{ delete resr.dataValues.updatable; res.json(resr); });
         });
       }else{
         res.status(404).json(errJSON("not_found", notFound("Reservation")));

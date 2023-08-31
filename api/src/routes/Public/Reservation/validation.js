@@ -1,9 +1,9 @@
-const {wrongNumberSize, isMandatory, wrongDataType}=require("../../error");
+const {wrongNumberSize, isMandatory, wrongDataType, wrongLengthBetween}=require("../../error");
 
 function tableValidator (table, errors){
   errors.table = [];
-  if(typeof table !== "number"){errors.table.push(wrongDataType);return};
-  if(!(table>0 && table<1000)) errors.table.push(wrongNumberSize("Table number", 999, 1));
+  if(typeof table !== "string"){errors.table.push(wrongDataType);return};
+  if(!(table.length<30 && table.length>0)) errors.table.push(wrongLengthBetween("Table ID", 30, 1));
   if(!errors.table.length)delete errors.table;
 };
 
@@ -18,11 +18,15 @@ function dateValidator (date, errors){
   errors.date = [];
   if(typeof date !== "string"){errors.date.push(wrongDataType);return};
   if(!date) errors.date.push(isMandatory("date"));
-  const enteringDate = new Date(date);
-  if(enteringDate.toString()==="Invalid Date"){
+  const entringDate = new Date(date);
+  if(entringDate.toString()==="Invalid Date"){
     errors.date.push("This is not a valid date.")
-  }else if(enteringDate.getTime()<Date.now()){
-    errors.date.push("Is not possible to reserve for a passed day.");
+  }else{
+    if(entringDate.getTime()<Date.now()){
+      errors.date.push("Is not possible to reserve for a passed day.");
+    }else if((entringDate.getTime()-Date.now())>2147483647){
+      errors.date.push("Reservations of more than 24 days are not allowed."); 
+    };
   };
   if(!errors.date.length)delete errors.date;
 };

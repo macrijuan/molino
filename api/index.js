@@ -1,6 +1,6 @@
 const server = require('./src/app.js');
 const { conn } = require('./src/db.js');
-const {User, Admin, Dish, Diet, Inventory, Reservation}=require("./src/db");
+const {User, Admin, Dish, Diet, Inventory, Reservation, Table}=require("./src/db");
 
 async function deleteReservations(){
   try{
@@ -13,7 +13,7 @@ async function deleteReservations(){
     });
   }catch(err){
     console.log(err);
-    throw new Error("There was an error while deleting the expired reservations");
+    throw new Error("There   was an error while deleting the expired reservations");
   };
 };
 
@@ -45,7 +45,8 @@ conn.sync({ force: setForce }).then(async() => {
     ]);
 
     await Dish.bulkCreate([
-      {name:"French toast", ingredients:["bread", "blueberry", "strawberry", "honey", "cream cheese", "sunflower seeds"], diets:["omnivorous", "vegetarian"], description:"", image:"image", taste:"sweet"},
+      {name:"French toast", ingredients:["bread", "blueberry", "strawberry", "honey", "cream cheese", "sunflower seeds"], diets:["omnivorous", "vegetarian"], description:"This dish is an excellent choice for those who want a healthy but delicious sweet meal.", image:"image", taste:"sweet"},
+      {name:"Avocado toast", ingredients:["bread", "avocado", "olive oil", "red pepper", "cream cheese", "chia seeds", "purple onion", "lemon juice"], diets:["omnivorous", "vegetarian"], description:"This dish is an excellent choice for those who want a healthy meal with nutritive fats.", image:"image", taste:"salty"},
       {name:"Fruit salad", ingredients:["tangerine", "kiwi", "strawbery", "banana", "plum", "orange juice", "lemon juice"], diets:["vegan", "vegetarian", "omnivorous"], description:"", image:"image2", taste:"sour"},
       {name:"Special stake", ingredients:["rib eye", "cumin", "hot pepper", "garlic", "lemon juice", "butter", "potato"], diets:["omnivorous"], description:"", image:"image3", taste:"salty"},
       {name:"Scrambled egg", ingredients:["egg", "onion", "lentils", "tomato", "olive oil", "bread", "oregano", "rice"], diets:["vegetarian", "omnivorous"], description:"", image:"image4", taste:"salty"},
@@ -74,14 +75,17 @@ conn.sync({ force: setForce }).then(async() => {
     const date = new Date();
     date.setDate(date.getDate()+1);
     const tomorrow = date.toISOString().split("T")[0];
-    await Reservation.bulkCreate([
-      {table:1, date:`${tomorrow} 10:00`, user:1},
-      {table:2, date:`${tomorrow} 10:00`, user:2},
-      {table:1, date:`${tomorrow} 11:00`, user:1},
-      {table:1, date:`${tomorrow} 12:00`, user:2},
-      {table:3, date:`${tomorrow} 13:00`, user:1},
-      {table:1, date:`${tomorrow} 13:00`, user:2},
-    ]);
+
+    [
+      {table:{id:"123", sits:2, sector:"a"},reservation:{tableId:"123", userId:1, date:`${tomorrow} 10:00`},},
+      {table:{id:"132", sits:2, sector:"a"},reservation:{tableId:"132", userId:2, date:`${tomorrow} 10:00`},},
+      {table:{id:"213", sits:4, sector:"f"},reservation:{tableId:"213", userId:3, date:`${tomorrow} 11:00`},},
+      {table:{id:"231", sits:6, sector:"i"},reservation:{tableId:"231", userId:2, date:`${tomorrow} 11:15`},},
+      {table:{id:"312", sits:6, sector:"i"},reservation:{tableId:"312", userId:3, date:`${tomorrow} 12:15`},},
+      {table:{id:"321", sits:4, sector:"f"},reservation:{tableId:"321", userId:2, date:`${tomorrow} 13:50`},}
+    ].forEach(async e=>{
+      Table.create(e.table).then(()=>{Reservation.create(e.reservation)});
+    });
   };
   server.listen(3001, () => {
     // const closeTime = new Date();

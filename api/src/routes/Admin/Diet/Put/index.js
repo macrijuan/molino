@@ -1,6 +1,6 @@
 const {Router}=require("express");
 const router = Router();
-const error = require("../../../error");
+const {errJSON, notFound} = require("../../../error");
 const {existingDiet}=require("../Post/controller");
 const {dietNameValidator, dietDescValidator}=require("../Post/validation");
 const {updateDiet}=require("./controller");
@@ -24,7 +24,7 @@ router.put("/update_diet/:id",async(req,res)=>{
 						if(result2){
 							res.json({message:result2})
 						}else{
-							res.status(404).json({errors:{not_found:error.notFound("diet")}});
+							res.status(404).json(errJSON("not_found", notFound("Diet")));
 						};
 					});
 				};

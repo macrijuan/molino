@@ -7,7 +7,7 @@ router.use((req,res,next)=>{
   try{
     res.locals.errors = {};
     if(req.body.name)nameValidator(req.body.name, res.locals.errors);
-    if(req.body.quantity)quantityValidator(req.body.quantity, res.locals.errors);
+    if(req.body.quantity){req.body.quantity = Number(req.body.quantity);quantityValidator(req.body.quantity, res.locals.errors);};
     if(req.body.unit)unitValidator(req.body.unit, res.locals.errors);
     if(req.body.class)classValidator(req.body.class, res.locals.errors);
     if(Object.keys(res.locals.errors).length){

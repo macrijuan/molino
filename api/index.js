@@ -17,6 +17,10 @@ async function deleteReservations(){
   };
 };
 
+const date = new Date();
+date.setDate(date.getDate()+1);
+const tomorrow = date.toISOString().split("T")[0];
+
 const setForce = true;
 // const setForce = false;
 
@@ -45,12 +49,12 @@ conn.sync({ force: setForce }).then(async() => {
     ]);
 
     await Dish.bulkCreate([
-      {name:"French toast", ingredients:["bread", "blueberry", "strawberry", "honey", "cream cheese", "sunflower seeds"], diets:["omnivorous", "vegetarian"], description:"This dish is an excellent choice for those who want a healthy but delicious sweet meal.", image:"image", taste:"sweet"},
-      {name:"Avocado toast", ingredients:["bread", "avocado", "olive oil", "red pepper", "cream cheese", "chia seeds", "purple onion", "lemon juice"], diets:["omnivorous", "vegetarian"], description:"This dish is an excellent choice for those who want a healthy meal with nutritive fats.", image:"image", taste:"salty"},
-      {name:"Fruit salad", ingredients:["tangerine", "kiwi", "strawbery", "banana", "plum", "orange juice", "lemon juice"], diets:["vegan", "vegetarian", "omnivorous"], description:"", image:"image2", taste:"sour"},
-      {name:"Special stake", ingredients:["rib eye", "cumin", "hot pepper", "garlic", "lemon juice", "butter", "potato"], diets:["omnivorous"], description:"", image:"image3", taste:"salty"},
-      {name:"Scrambled egg", ingredients:["egg", "onion", "lentils", "tomato", "olive oil", "bread", "oregano", "rice"], diets:["vegetarian", "omnivorous"], description:"", image:"image4", taste:"salty"},
-      {name:"Chickpea stew", ingredients:["chickpea", "olive oil", "onion", "carrot", "garilc", "tomato", "creamy cheese", "thyme"], diets:["omnivorous", "vegetarian"], description:"", image:"image5", taste:"salty"}
+      {price:123, name:"French toast", ingredients:["bread", "blueberry", "strawberry", "honey", "cream cheese", "sunflower seeds"], diets:["omnivorous", "vegetarian"], description:"This dish is an excellent choice for those who want a healthy but delicious sweet meal.", image:"image", taste:"sweet"},
+      {price:456, name:"Avocado toast", ingredients:["bread", "avocado", "olive oil", "red pepper", "cream cheese", "chia seeds", "purple onion", "lemon juice"], diets:["omnivorous", "vegetarian"], description:"This dish is an excellent choice for those who want a healthy meal with nutritive fats.", image:"image", taste:"salty"},
+      {price:789, name:"Fruit salad", ingredients:["tangerine", "kiwi", "strawbery", "banana", "plum", "orange juice", "lemon juice"], diets:["vegan", "vegetarian", "omnivorous"], description:"", image:"image2", taste:"sour"},
+      {price:321, name:"Special stake", ingredients:["rib eye", "cumin", "hot pepper", "garlic", "lemon juice", "butter", "potato"], diets:["omnivorous"], description:"", image:"image3", taste:"salty"},
+      {price:654, name:"Scrambled egg", ingredients:["egg", "onion", "lentils", "tomato", "olive oil", "bread", "oregano", "rice"], diets:["vegetarian", "omnivorous"], description:"", image:"image4", taste:"salty"},
+      {price:987, name:"Chickpea stew", ingredients:["chickpea", "olive oil", "onion", "carrot", "garilc", "tomato", "creamy cheese", "thyme"], diets:["omnivorous", "vegetarian"], description:"", image:"image5", taste:"salty"}
     ]);
     
     await Diet.bulkCreate([
@@ -59,30 +63,28 @@ conn.sync({ force: setForce }).then(async() => {
       {name:"vegetarian", description:"no-meat dish"}
     ]);
 
-    await Inventory.bulkCreate([
-      {name:"French Lettuce", quantity:30, unit:"Kg", class:"Vegetable"},
-      {name:"Butter Lettuce", quantity:30, unit:"Kg", class:"Vegetable"},
-      {name:"Tomate perita", quantity:30, unit:"Kg", class:"Vegetable"},
-      {name:"Tomate redondo", quantity:30, unit:"Kg", class:"Vegetable"},
+    [
+      {name:"French Lettuce", quantity:30, unit:"Kg", class:"Vegetal"},
+      {name:"Butter Lettuce", quantity:30, unit:"Kg", class:"Vegetal"},
+      {name:"Tomate perita", quantity:30, unit:"Kg", class:"Vegetal"},
+      {name:"Tomate redondo", quantity:30, unit:"Kg", class:"Vegetal"},
       {name:"Egg", quantity:50, unit:"Kg", class:"Animal"},
       {name:"Bread", quantity:50, unit:"Kg", class:"Mixed"},
       {name:"Stand set", quantity:5, unit:"u", class:"Furniture"},
       {name:"Forks", quantity:100, unit:"u", class:"Tableware"},
       {name:"Span", quantity:100, unit:"u", class:"Dinner set"},
       {name:"Christmas garland", quantity:10, unit:"u", class:"Other"},
-    ]);
-
-    const date = new Date();
-    date.setDate(date.getDate()+1);
-    const tomorrow = date.toISOString().split("T")[0];
+    ].forEach(async inventory=>{
+      await Inventory.create(inventory);  
+    });
 
     [
-      {table:{id:"123", sits:2, sector:"a"},reservation:{tableId:"123", userId:1, date:`${tomorrow} 10:00`},},
-      {table:{id:"132", sits:2, sector:"a"},reservation:{tableId:"132", userId:2, date:`${tomorrow} 10:00`},},
-      {table:{id:"213", sits:4, sector:"f"},reservation:{tableId:"213", userId:3, date:`${tomorrow} 11:00`},},
-      {table:{id:"231", sits:6, sector:"i"},reservation:{tableId:"231", userId:2, date:`${tomorrow} 11:15`},},
-      {table:{id:"312", sits:6, sector:"i"},reservation:{tableId:"312", userId:3, date:`${tomorrow} 12:15`},},
-      {table:{id:"321", sits:4, sector:"f"},reservation:{tableId:"321", userId:2, date:`${tomorrow} 13:50`},}
+      {table:{id:"123", sits:2, sector:"A"},reservation:{tableId:"123", userId:1, date:`${tomorrow} 10:00`},},
+      {table:{id:"132", sits:2, sector:"A"},reservation:{tableId:"132", userId:2, date:`${tomorrow} 10:00`},},
+      {table:{id:"213", sits:4, sector:"F"},reservation:{tableId:"213", userId:3, date:`${tomorrow} 11:00`},},
+      {table:{id:"231", sits:6, sector:"I"},reservation:{tableId:"231", userId:2, date:`${tomorrow} 11:15`},},
+      {table:{id:"312", sits:6, sector:"I"},reservation:{tableId:"312", userId:3, date:`${tomorrow} 12:15`},},
+      {table:{id:"321", sits:4, sector:"F"},reservation:{tableId:"321", userId:2, date:`${tomorrow} 13:50`},}
     ].forEach(async e=>{
       Table.create(e.table).then(()=>{Reservation.create(e.reservation)});
     });
@@ -98,6 +100,7 @@ conn.sync({ force: setForce }).then(async() => {
     // },closeTime.getTime()-Date.now());
     console.log('listening at port 3001'); // eslint-disable-line no-console
     console.log('__________________________________');
+    console.log(date.getHours()+":"+date.getMinutes());
     console.log('__________________________________');
   });
 });

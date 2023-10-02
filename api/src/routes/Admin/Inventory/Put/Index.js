@@ -1,33 +1,37 @@
-const {Router}=require("express");
+const { Router } = require('express');
 const router = Router();
 const format = require("./Controller/format");
 const existing = require("./Controller/existing");
 const {Inventory}=require("../../../../db");
-const {unknown, errJSON, equalToCurent, notFound}=require("../../../error");
+const {getMany}=require("../../../routeFormatter");
+const {notFound, unknown, errJSON} = require("../../../error");
 
 router.put("/update_inventory/:id",
-  (req,res,next)=>{res.locals.id = req.params.id; next()},
-  format,
-  existing,
-  async (req,res)=>{
-    try{
-      Inventory.findByPk(req.params.id)
-      .then(inventory=>{
-        if(inventory){
-          const equality = Object.keys(inventory.dataValues).find(prop=>{if(inventory[prop]===req.body[prop])return prop;})
-          if(equality){
-            res.json(errJSON(`${equality}`, equalToCurent(`${equality}`)));
-          }else{
-            inventory.update(req.body)
-            .then(inventory=>inventory.save())
-            .then(inventory=>{res.json(inventory)});
-          };
-        }else res.json(errJSON("not_found", notFound("Inventory's element")));
-      });
-    }catch(err){
-      res.status(500).json({errors:{unknown:unknown}});
-    };
-  }
-);
+	(req,res, next)=>{res.locals.params=req.params; res.locals.errors={}; next();},
+	format,
+ 	existing,
+ 	async(req,res)=>{
+	try{
+		Inventory.findByPk(req.params.id)
+		.then(async (inventory)=>{
+			if(inventory){
+				inventory.update(req.body)
+				.then(updated_inventory=>updated_inventory.save())
+				.then(async (inventory)=>{
+					if(req.query.single==="t"){
+						res.json(inventory);
+					}else{
+						await getMany(Inventory, req.query, res, "Inventory", inventory.rawAttributes.options.defaultValue);
+					};
+				});
+			}else{
+				res.status(404).json(errJSON("not_found", notFound("Inventory")));
+			};
+		});
+	}catch(err){
+		console.log(err);
+		res.status(500).json(errJSON("unknown", unknown));
+	};
+});
 
 module.exports = router;

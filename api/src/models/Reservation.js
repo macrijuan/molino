@@ -40,12 +40,6 @@ module.exports= (sequelize)=>{
     },
     deletion_code:{
       type: INTEGER,
-    },
-    updatable:{
-      type:ARRAY(STRING),
-      set(value){
-        this.setDataValue("updatable", setUpdatable(value, null));
-      }
     }
   },
   {

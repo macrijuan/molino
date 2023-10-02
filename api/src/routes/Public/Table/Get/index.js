@@ -2,7 +2,7 @@ const {Router}=require("express");
 const router = Router();
 const {errJSON, notFound, unknown}=require("../../../error");
 const {Table}=require("../../../../db");
-const { setUpdatables }=require("../../../routeFormatter")
+const { setOptions }=require("../../../routeFormatter")
 
 router.get("/get_table/:id",async(req,res)=>{
   try{
@@ -23,10 +23,10 @@ router.get("/get_tables",async(req,res)=>{
     Table.findAndCountAll({
       offset:req.query.index,
       limit:req.query.perPage,
-      attributes:{exclude:["updatable"]},
+      attributes:{exclude:["options"]},
     }).then(tables=>{
       if(tables.rows&&tables.rows.length){
-        setUpdatables(tables, Table); res.json(tables);
+        setOptions(tables); res.json(tables);
       }else res.status(404).json(errJSON("not_found", notFound("Tables")));
     });
   }catch(err){
@@ -43,12 +43,12 @@ router.get("/get_by_filter",async(req,res)=>{
     if(Object.keys(res.locals.filter).length){
       Table.findAndCountAll({
         where:res.locals.filter,
-        attributes:{exclude:["updatable"]},
+        attributes:{exclude:["options"]},
         offset:req.query.index,
         limit:req.query.perPage
       }).then(tables=>{
         if(tables.rows&&tables.rows.length){
-          setUpdatables(tables, Table); res.json(tables);
+          setOptions(tables); res.json(tables);
         }else res.status(404).json(errJSON("not_found", notFound("Tables")));
       });
     };

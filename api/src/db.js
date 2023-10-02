@@ -29,7 +29,7 @@ sequelize.models = Object.fromEntries(capsEntries);
 
 // En sequelize.models están todos los modelos importados como propiedades
 // Para relacionarlos hacemos un destructuring
-const { Moderator, Diet, Dish, Ingredient, User, Reservation, Table } = sequelize.models;
+const { Administrator, Diet, Dish, Ingredient, User, Reservation, Table } = sequelize.models;
 
 // Aca vendrian las relaciones
 Reservation.hasOne(User);

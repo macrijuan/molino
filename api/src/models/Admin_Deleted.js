@@ -1,15 +1,16 @@
-const { DataTypes } = require('sequelize');
+const { STRING, ENUM, JSON } = require('sequelize');
+const { setUpdatable }=require("../formatter");
 
 module.exports = (sequelize) => {
   sequelize.define('admin_deleted', {
     // id:{
-    //   type: DataTypes.UUID,
+    //   type: UUID,
     //   primaryKey:true,
     //   allowNull: false,
-    //   defaultValue:DataTypes.UUIDV4
+    //   defaultValue:UUIDV4
     // },
     email:{
-      type:DataTypes.STRING,
+      type:STRING,
       allowNull: false,
       unique:true,
       validate:{
@@ -18,14 +19,14 @@ module.exports = (sequelize) => {
       }
     },
     password:{
-      type:DataTypes.STRING,
+      type:STRING,
       allowNull: false,
       validate:{
         len:[8,35]
       }
     },
     first_name: {
-      type: DataTypes.STRING,
+      type: STRING,
       allowNull: false,
       set(value){
         this.setDataValue("first_name", value.toUpperCase());
@@ -35,7 +36,7 @@ module.exports = (sequelize) => {
       }
     },
     last_name:{
-      type:DataTypes.STRING,
+      type:STRING,
       allowNull: false,
       set(value){
         this.setDataValue("last_name", value.toUpperCase());
@@ -45,9 +46,16 @@ module.exports = (sequelize) => {
       }
     },
     status:{
-      type:DataTypes.ENUM("active", "suspended", "quitted", "fired"),
+      type:ENUM("active", "suspended", "quitted", "fired"),
       allowNull:false,
       defaultValue:"active"
+    },
+    updatable:{
+      type:JSON,
+      defaultValue: {"status":["active", "suspended", "quitted", "fired"]},
+      set(value){
+        this.setDataValue("updatable", setUpdatable(value, this.rawAttributes.updatable.defaultValue));
+      }
     }
   },{
     timestamps:false

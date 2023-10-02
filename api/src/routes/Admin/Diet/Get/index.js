@@ -4,14 +4,14 @@ const searchFormat = require("./Controller/format.js");
 const {Diet}=require("../../../../db.js");
 const {Op}=require("sequelize");
 const { notFound, unknown } = require("../../../error.js");
-const { setUpdatables } = require("../../../routeFormatter.js");
+const { setOptions } = require("../../../routeFormatter.js");
 
 router.get("/get_diets", async(req,res)=>{
   try{
-    Diet.findAndCountAll({limit:req.query.perPage, offset:req.query.index, attributes:{exclude:["updatable"]}})
+    Diet.findAndCountAll({limit:req.query.perPage, offset:req.query.index, attributes:{exclude:["options"]}})
     .then(diets=>{
       if(diets&&diets.rows.length){
-        setUpdatables(diets, Diet);res.json(diets);
+        setOptions(diets);res.json(diets);
       }else{
         res.status(404).json({errors:{not_found:notFound("Diets")}});
       };
@@ -26,7 +26,7 @@ router.get("/get_diet/:id", async(req,res)=>{
     Diet.findByPk(req.params.id)
     .then(diet=>{
       if(diet){
-        setUpdatables(diet, Diet);res.json(diet);
+        res.json(diet);
       }else{
         res.status(404).json({errors:{not_found:notFound("Diet")}});
       };
@@ -43,12 +43,12 @@ router.get("/get_by_name", searchFormat, async(req,res)=>{
       where:{
         name:{[Op.substring]:`${req.query.name}`}
       },
-      attributes:{exclude:["updatable"]},
+      attributes:{exclude:["options"]},
       limit:req.query.perPage, offset:req.query.index
     })
     .then(diets=>{
       if(diets&&diets.rows.length){
-        setUpdatables(diets, Diet);res.json(diets);
+        setOptions(diets);res.json(diets);
       }else{
         res.status(404).json({errors:{not_found:notFound("Diets")}});
       };
@@ -60,7 +60,7 @@ router.get("/get_by_name", searchFormat, async(req,res)=>{
 
 router.get("/test", async(req,res)=>{
   try{
-    Diet.findAll({attributes:{exclude:["updatable"]}}).then(resr=>{setUpdatables(resr);res.send(resr);});
+    Diet.findAll({attributes:{exclude:["options"]}}).then(resr=>{setOptions(resr);res.send(resr);});
     
   }catch(err){
     res.status(500).json({errors:{unknown:unknown}});

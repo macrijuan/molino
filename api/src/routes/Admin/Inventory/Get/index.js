@@ -3,14 +3,14 @@ const router = Router();
 const {Inventory}=require("../../../../db");
 const {Op}=require("sequelize");
 const {unknown, notFound}=require("../../../error");
-const { setUpdatables }=require("../../../routeFormatter");
+const { setOptions }=require("../../../routeFormatter");
 
 router.get("/get_inventory", async (req,res)=>{
   try{
-    Inventory.findAndCountAll({limit:req.query.perPage, offset:req.query.page, attributes:{exclude:["updatable"]}})
+    Inventory.findAndCountAll({limit:req.query.perPage, offset:req.query.page, attributes:{exclude:["options"]}})
     .then(inventory=>{
       if(inventory&&inventory.rows.length){
-        setUpdatables(inventory, Inventory); res.json(inventory);
+        setOptions(inventory); res.json(inventory);
       }else{
         res.status(404).json({errors:{not_found:notFound("Elements")}});
       };
@@ -44,12 +44,12 @@ router.get("/get_by_name", async (req,res)=>{
             [Op.substring]: req.query.name
           }
         },
-        attributes:{exclude:["updatable"]},
+        attributes:{exclude:["options"]},
         limit:req.query.perPage,
         offset:req.query.index
       }).then(items=>{
         if(items){
-          setUpdatables(items, Inventory); res.json(items);
+          setOptions(items); res.json(items);
         }else{
           res.status(404).json({errors:{not_found:notFound("Items")}});
         };
@@ -65,13 +65,13 @@ router.get("/get_by_class", async (req,res)=>{
         where:{
           class:req.query.class
         },
-        attributes:{exclude:["updatable"]},
+        attributes:{exclude:["options"]},
         limit:req.query.perPage,
         offset: req.query.index
       })
       .then(items=>{
         if(items){
-          setUpdatables(items, Inventory); res.json(items);
+          setOptions(items); res.json(items);
         }else{
           res.status(404).json({errors:{not_found:notFound("Items")}});
         };

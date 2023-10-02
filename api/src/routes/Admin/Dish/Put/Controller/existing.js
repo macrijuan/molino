@@ -1,9 +1,9 @@
 const {Router}=require("express");
 const router = Router();
-const{Dish}=require("../../../../db");
+const{Dish}=require("../../../../../db");
 const{Op}=require("sequelize");
-const {existingFor, equalToCurent}=require("../../../error");
-const {dobleSpaceEraser}=require("../../../../formatter");
+const {existingFor, equalToCurent}=require("../../../../error");
+const {dobleSpaceEraser}=require("../../../../../formatter");
 
 router.use(async(req,res,next)=>{
   if(req.body.name || req.body.image){

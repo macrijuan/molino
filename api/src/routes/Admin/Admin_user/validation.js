@@ -6,7 +6,8 @@ const number = /^[\d]{1,32}$/;//test 4
 
 const nameFormat = /^[a-zà-ÿA-ZÀ-Ý ]*$/;
 
-const {wrongCharType, wrongLengthBetween, isMandatory, atLeastOne, cantContain} = require("../../error");
+const { all } = require("axios");
+const {wrongCharType, wrongLengthBetween, isMandatory, atLeastOne, cantContain, wrongDataType, unknown} = require("../../error");
 
 //EVERY FUNCTION HERE SETS res.locals.errors arrays. They fill them with errors and if there's any, they delete the error array.
 
@@ -49,9 +50,16 @@ function namesValidator(name, routeErrors, dataName){
   if(!routeErrors[dataName.replace(" ", "_")].length)delete routeErrors[dataName.replace(" ", "_")];
 };
 
+function statusValidator(status, allowedValues, errors){
+  errors.status=[];
+  if(!status || typeof status !== "string" || !allowedValues.includes(status))errors.status.push(unknown);
+  if(!errors.status.length)delete errors.status;
+}
+
 
 module.exports = {
   emailValidator,
   passwordValidator,
-  namesValidator
+  namesValidator,
+  statusValidator
 };

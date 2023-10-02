@@ -1,5 +1,5 @@
-const { STRING, ARRAY } = require('sequelize');
-const { setUpdatable }=require("../formatter");
+const { STRING, JSON, BOOLEAN } = require('sequelize');
+const { setValue }=require("../formatter");
 
 module.exports = (sequelize) => {
   sequelize.define('diet', {
@@ -25,11 +25,14 @@ module.exports = (sequelize) => {
         len:[0, 100]
       }
     },
-    updatable:{
-      type:ARRAY(STRING),
-      defaultValue:["name", "description"],
+    options:{
+      type:JSON,
+      defaultValue: {
+        updatable:{"name":"string", "description":"string"},
+        deleteable:true
+      },
       set(value){
-        this.setDataValue("updatable", setUpdatable(value, ["name", "description"]));
+        this.setDataValue("options", setValue(value, this.rawAttributes.options.defaultValue));
       }
     }
   },{

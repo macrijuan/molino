@@ -1,4 +1,5 @@
 const { STRING, BOOLEAN, ARRAY } = require('sequelize');
+const {setValue}=require("../formatter");
 module.exports = (sequelize) => {
   sequelize.define('user', {
     // id:{
@@ -47,12 +48,6 @@ module.exports = (sequelize) => {
       type:BOOLEAN,
       allowNull:false,
       defaultValue: false
-    },
-    updatable:{
-      type:ARRAY(STRING),
-      set(value){
-        this.setDataValue("updatable", setUpdatable(value, null));
-      }
     }
   },{
     timestamps:false

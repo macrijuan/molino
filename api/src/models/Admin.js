@@ -1,5 +1,5 @@
-const { STRING, ENUM, ARRAY,  } = require('sequelize');
-const { setUpdatable }=require("../formatter");
+const { STRING, ENUM, JSON } = require('sequelize');
+const { setValue }=require("../formatter");
 
 module.exports = (sequelize) => {
   sequelize.define('admin', {
@@ -50,11 +50,13 @@ module.exports = (sequelize) => {
       allowNull:false,
       defaultValue:"active"
     },
-    updatable:{
-      type:ARRAY(STRING),
-      defaultValue: ["status"],
+    options:{
+      type:JSON,
+      defaultValue: {
+        updatable:{"status":["active", "suspended", "quitted", "fired"]},
+      },
       set(value){
-        this.setDataValue("updatable", setUpdatable(value, ["status"]));
+        this.setDataValue("options", setValue(value, this.rawAttributes.options.defaultValue));
       }
     }
   },{

@@ -3,18 +3,19 @@ const router = Router();
 const {Admin}=require("../../../../db");
 const {Op}=require("sequelize");
 const {notFound, errJSON}=require("../../../error");
-const { setUpdatables }=require("../../../routeFormatter");
+const { setOptions }=require("../../../routeFormatter");
 
 router.get("/get_admin_users", async(req,res)=>{
   Admin.findAndCountAll({
     attributes:{
-      exclude:["password", "updatable"]
+      exclude:["password", "options"]
     },
+    where:{email:{[Op.notLike]:"superAdmin@example.com"}},
     offset:req.query.index,
     limit:req.query.perPage
   }).then(admins=>{
     if(admins&&admins.rows.length){
-      setUpdatables(admins, Admin); res.json(admins);
+      setOptions(admins); res.json(admins);
     }else{
       res.status(404).json(errJSON("not_found", notFound("Administrators")));
     };
@@ -29,27 +30,6 @@ router.get("/get_admin_user/:id", async(req,res)=>{
       res.json(admin.dataValues);
     }else{
       res.status(404).json(errJSON("not_found", notFound("Administrator")));
-    };
-  });
-});
-
-router.get("/get_by_name", async(req,res)=>{
-  Admin.findAndCountAll({
-    where:{[Op.or]:[
-      {first_name:{[Op.substring]:[req.body.first_name]}},
-      {last_name:{[Op.substring]:[req.body.last_name]}},
-    ]},
-    attributes:{
-      exclude:["password", "udpatable"]
-    },
-    offset:req.query.index,
-    limit:req.query.perPage
-  })
-  .then(admins=>{
-    if(admins&&admins.rows.length){
-      setUpdatables(admins, Admin); res.json(admins);
-    }else{
-      res.status(404).json(errJSON("not_found", notFound("Administrators")));
     };
   });
 });

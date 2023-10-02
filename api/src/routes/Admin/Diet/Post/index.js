@@ -2,7 +2,7 @@ const {Router}=require("express");
 const router = Router();
 const error = require("../../../error");
 const {existingDiet, postDiet}=require("./controller");
-const {dietNameValidator, dietDescValidator}=require("./validation");
+const {dietNameValidator, dietDescValidator}=require("../validation");
 
 router.post("/post_diet",async(req,res)=>{
 	try{

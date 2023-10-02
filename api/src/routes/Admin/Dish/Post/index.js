@@ -5,15 +5,16 @@ const {unknown} = require("../../../error");
 const format = require("./Controller/format");
 const existing = require("./Controller/existing");
 
-router.post("/post_dish", format, existing, async(req,res)=>{
+router.post("/post_dish",
+format,
+existing,
+async(req,res)=>{
 	try{
-		const {name, ingredients, diets, description, image, taste}=req.body;
+		const {name, ingredients, diets, description, image, taste, price}=req.body;
     Dish.create({
-      name, ingredients, diets, description, image, taste
-    })
-    .then((newDish)=>{
+      name, ingredients, diets, description, image, taste, price
+    }).then((newDish)=>{
       res.status(200).json(newDish);
-      res.end();
     });
 	}catch(err){
 		console.log(err);

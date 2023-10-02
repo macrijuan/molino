@@ -1,9 +1,12 @@
 const{Router}=require("express");
 const router = Router();
 const format = require("./Controller/format");
-const existing = require("./Controller/existing");;
+const statusFormat = require("./Controller/status_data");
+const existing = require("./Controller/existing");
 const{Admin}=require("../../../../db");
-const {notFound, unknown} = require("../../../error");
+const {Op}=require("sequelize");
+const {notFound, unknown, errJSON} = require("../../../error");
+const {setOptions}=require("../../../routeFormatter");
 
 router.put("/update_admin_user/:id",
   (req,res,next)=>{res.locals.params=req.params; next();},
@@ -13,11 +16,8 @@ router.put("/update_admin_user/:id",
       .then(admin=>{
         if(admin){
           admin.update(req.body)
-          .then(update=>update.save()
-            .then(admin=>{
-              res.json(admin);
-            })
-          );
+          .then(update=>update.save())
+          .then(admin=>{res.json(admin);});
         }else{
           res.status(404).json({errors:{not_found:notFound("Administrator")}});
         };
@@ -25,6 +25,53 @@ router.put("/update_admin_user/:id",
     }catch(err){
       res.status(500).json({errors:{unknown:unknown}});
     };
+});
+
+router.put("/update_admin_status/:id",
+	(req,res, next)=>{res.locals.params=req.params; res.locals.errors={}; next();},
+	statusFormat,
+ 	async(req,res)=>{
+	try{
+		Admin.findByPk(req.params.id)
+		.then(async (admin)=>{
+			if(admin){
+        res.locals.data = {limit:req.query.perPage,offset:req.query.index, attributes:{exclude:["options", "password"]}};
+        Object.keys(req.query).forEach(prop=>{
+          if(typeof req.query[prop]==="string" && [ "first_name", "last_name", "status" ].includes(prop)){
+            res.locals.filter[prop]=query[prop];
+          };
+        });
+        if(!(admin.email==="superAdmin@example.com")){
+          res.locals.filter = {email:{[Op.notILike]: '%superAdmin@example.com'}};
+          res.locals.data.where=res.locals.filter;
+          console.log({status:req.body.status})
+          admin.update({status:req.body.status})
+          .then(updated_admin=>updated_admin.save())
+          .then(async (admin)=>{
+            if(req.query.single==="t"){
+              res.json(admin);
+            }else{
+              Admin.findAndCountAll(res.locals.data)
+              .then(admins=>{
+                if(admins&&admins.rows.length){
+                  setOptions(admins, Admin); res.json(admins);
+                }else{
+                  res.status(404).json(errJSON("not_found", notFound("Administrators")));
+                };
+              });
+            };
+          });
+        }else{
+          res.status(403).json(errJSON("status", ["It's not possible to apply these changes."]));
+        };
+			}else{
+				res.status(404).json(errJSON("not_found", notFound(`Administrator (id:${req.params.id})`)));
+			};
+		});
+	}catch(err){
+		console.log(err);
+		res.status(500).json(errJSON("unknown", unknown));
+	};
 });
 
 module.exports=router;

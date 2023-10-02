@@ -1,7 +1,8 @@
 const {Router}=require("express");
 const router = Router();
-const {errJSON, notFound, unknown}=require("../../../error");
 const {Table}=require("../../../../db");
+const {getMany}=require("../../../routeFormatter");
+const {errJSON, notFound, unknown}=require("../../../error");
 
 router.delete("/delete_table/:id",async(req,res)=>{
   try{
@@ -9,7 +10,7 @@ router.delete("/delete_table/:id",async(req,res)=>{
     .then(table=>{
       if(table){
         table.destroy({force:true})
-        .then(()=>{res.json(errJSON("message", `The table ${table.id} has been deleted.`))})
+        .then(async ()=>{await getMany(Table, req.query, res, "Table");})
       }else res.status(404).json(errJSON("not_found", notFound("Table")));
     });
   }catch(err){

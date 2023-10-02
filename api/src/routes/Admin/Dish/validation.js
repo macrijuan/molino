@@ -1,4 +1,4 @@
-const {wrongDataType, wrongLengthBetween, wrongLengthBetweenArr, wrongCharType, isMandatory} = require("../../error");
+const {wrongDataType, wrongLengthBetween, wrongLengthBetweenArr, wrongCharType, isMandatory, wrongNumberSize, copyedData} = require("../../error");
 
 //nameValidator --> name=string, errors=arr. || fills errors.name with error messeges if format not allowed.
 function nameValidator(name, errors){
@@ -13,12 +13,13 @@ function nameValidator(name, errors){
 function ingredientsValidator(ingrs, errors){
   errors.ingredients=[];
   if(!Array.isArray(ingrs)) {errors.ingredients.push(wrongDataType); return;};
-  if(!ingrs.length) errors.ingredients.push(emptyData("dish", "ingredient"));
+  if(!ingrs.length) errors.ingredients.push(isMandatory("Ingredient filed"));
   let a = 0;
   while(a<ingrs.length){
     if(typeof ingrs[a] !== "string") {errors.ingredients = [wrongDataType]; return;};
     if(ingrs[a].length>30 || ingrs[a].length<2) errors.ingredients.push(wrongLengthBetweenArr("ingredient", 2, 30, ingrs[a]));
     if(!(/^.[a-zà-ÿ ]{2,30}$/.test(ingrs[a]))) errors.ingredients.push(wrongCharType("ingredient", "letters and spaces", ingrs[a]));
+    if(ingrs.filter(e=>e===ingrs[a]).length>1)errors.ingredients.push(copyedData(ingrs[a]));
     a++;
   };
   if(!errors.ingredients.length)delete errors.ingredients;
@@ -55,10 +56,20 @@ function imageValidator(image, errors){
   if(!errors.image.length)delete errors.image;
 };
 
+//imageValidator --> image=string, errors=arr. || fills errors.image with error messeges if format not allowed.
+function priceValidator(price, errors){
+  errors.price=[];
+  if(typeof price !== "number" || !price){errors.price.push(isMandatory("price"));return;};
+  if(isNaN(price)) {errors.price.push(wrongDataType); return;};
+  if(price>100000 || price<0)errors.price.push(wrongNumberSize("price",0,100000));
+  if(!errors.price.length)delete errors.price;
+};
+
 module.exports={
   nameValidator,
   ingredientsValidator,
   dietsValidator,
   descriptionValidator,
-  imageValidator
+  imageValidator,
+  priceValidator
 };

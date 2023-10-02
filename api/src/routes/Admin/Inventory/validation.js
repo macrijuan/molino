@@ -13,8 +13,9 @@ function nameValidator(name, errors){
 
 function quantityValidator(quantity, errors){
   errors.quantity = [];
-  if(typeof quantity !== "number"){
-    errors.name.push(wrongDataType)
+  console.log(quantity);
+  if(typeof quantity !== "number" || !quantity){
+    errors.quantity.push(isMandatory("quantity"));
   }else{
     if(quantity>100000 || quantity<0) errors.quantity.push(wrongNumberSize("quantity", 0, 100000));
   };
@@ -36,7 +37,7 @@ function classValidator(class_, errors){
   if(typeof class_ !== "string"){
     errors.class.push(isMandatory("class"));
   }else{
-    if(!Inventory.getAttributes().class.values.find(e=>e===unit)) errors.class.push("The value is not allowed.");
+    if(!Inventory.getAttributes().class.values.find(e=>e===class_)) errors.class.push("The value is not allowed.");
   };
   if(!errors.class.length)delete errors.class;
 };

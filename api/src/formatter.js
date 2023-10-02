@@ -22,7 +22,7 @@ function nameFormatter (string){
   return str;
 };
 
-function setUpdatable(value, data){
+function setValue(value, data){
   value=data;
   return value;
 };
@@ -33,13 +33,12 @@ function arrRemover(data, arr){
       if(arr[a]===data[b])arr.splice(a, 1);
     };
   };
-  console.log("HOLAAAAA")
   return arr;
 };
 
 module.exports = {
   dobleSpaceEraser,
   nameFormatter,
-  setUpdatable,
+  setValue,
   arrRemover
 };

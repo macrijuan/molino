@@ -2,14 +2,14 @@ const { Router } = require('express');
 const router = Router();
 const {Dish}=require("../../../../db");
 const errors = require("../../../error");
-const { setUpdatables }=require("../../../routeFormatter");
+const { setOptions }=require("../../../routeFormatter");
 
 router.get("/get_dishes", async(req,res)=>{
 	try{
-		Dish.findAndCountAll({offset:req.query.index, limit:req.query.perPage, attributes:{exclude:["updatable"]}})
+		Dish.findAndCountAll({offset:req.query.index, limit:req.query.perPage, attributes:{exclude:["options"]}})
 		.then((result)=>{
 			if(result.rows&&result.rows.length){
-				setUpdatables(result, Dish);res.status(200).json(result);
+				setOptions(result);res.json(result);
 			}else{
 				res.status(404).json({errors:{not_found:errors.notFound("Dish")}});
 			};
@@ -23,9 +23,9 @@ router.get("/get_dishes", async(req,res)=>{
 router.get("/get_dish/:id", async(req,res)=>{
 	try{
 		Dish.findByPk(req.params.id)
-		.then((result)=>{
-			if(result){
-				res.status(200).json(result);
+		.then((dish)=>{
+			if(dish){
+				res.status(200).json(dish);
 			}else{
 				res.status(404).json({errors:{not_found:errors.notFound("Dish")}});
 			};

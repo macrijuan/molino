@@ -1,5 +1,5 @@
-const { STRING, INTEGER, ENUM, ARRAY } = require('sequelize');
-const { arrRemover, setUpdatable } = require('../formatter');
+const { STRING, INTEGER, ENUM, JSON, BOOLEAN } = require('sequelize');
+const { arrRemover, setValue } = require('../formatter');
 module.exports = (sequelize) => {
   sequelize.define('inventory', {
     // id:{
@@ -32,14 +32,22 @@ module.exports = (sequelize) => {
       allowNull:false
     },
     class:{
-      type: ENUM("Vegetable", "Animal", "Mixed", "Furniture", "Tableware", "Dinner set", "Other"),
+      type: ENUM("Vegetal", "Animal", "Mixed", "Furniture", "Tableware", "Dinner set", "Other"),
       allowNull:false,
     },
-    updatable:{
-      type:ARRAY(STRING),
-      defaultValue:["name", "quantity", "unit", "class"],
+    options:{
+      type:JSON,
+      defaultValue:{
+        updatable:{
+        "name":"string",
+        "quantity":"string",
+        "unit":["Kg", "g", "oz", "ton", "lb", "u"],
+        "class":["Vegetal", "Animal", "Mixed", "Furniture", "Tableware", "Dinner set", "Other"]
+        },
+        deleteable:true
+      },
       set(value){
-        this.setDataValue("updatable", setUpdatable(value,["name", "quantity", "unit", "class"]));
+        this.setDataValue("options", setValue(value,this.rawAttributes.options.defaultValue));
       }
     }
   },{

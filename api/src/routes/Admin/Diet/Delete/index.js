@@ -1,6 +1,7 @@
 const {Router} = require("express");
 const router = Router();
 const {Diet}=require("../../../../db");
+const{getMany}=require("../../../routeFormatter");
 const { notFound, unknown } = require("../../../error");
 
 router.delete("/delete_diet/:id", async(req,res)=>{
@@ -8,7 +9,7 @@ router.delete("/delete_diet/:id", async(req,res)=>{
     Diet.findByPk(req.params.id)
     .then(diet=>{
       if(diet){
-        diet.destroy({force:true}).then(()=>{res.json(`The diet "${diet.name}" has been deleted.`)});
+        diet.destroy({force:true}).then(async ()=>{await getMany(Diet, req.query, res, "Diet");});
       }else{
         res.status(404).json({errors:{not_found:notFound("Diet")}});
       };

@@ -1,6 +1,6 @@
-const { STRING, ARRAY, BOOLEAN, TEXT, INTEGER, ENUM } = require('sequelize');
+const { STRING, ARRAY, BOOLEAN, TEXT, INTEGER, ENUM, JSON } = require('sequelize');
 const {arrayValidator} = require("../models_validations");
-const {dobleSpaceEraser, setUpdatable, arrRemover}=require("../formatter");
+const { dobleSpaceEraser, setValue }=require("../formatter");
 
 module.exports = (sequelize) => {
   sequelize.define('dish', {
@@ -74,6 +74,7 @@ module.exports = (sequelize) => {
     },
     price:{
       type:INTEGER,
+      allowNull:false,
       validate:{
         max:100000,
         min:0
@@ -84,12 +85,23 @@ module.exports = (sequelize) => {
       allowNull:false,
       defaultValue:true
     },
-    updatable:{
-      type:ARRAY(STRING),
-      defaultValue:["name", "ingredients", "diets", "description", "image", "taste", "price", "available"],
+    options:{
+      type:JSON,
+      defaultValue:{
+        updatable:{
+          "name":"string",
+          "ingredients":"array",
+          "diets":"array",
+          "description":"string",
+          "image":"string",
+          "taste":["salty", "sweet", "sour", "bittersweet", "bitter", "spicy"],
+          "price":"string",
+          "available":"string"
+        },
+        deleteable:true
+      },
       set(value){
-        // const props = Object.keys(this.rawAttributes);
-        this.setDataValue("updatable", setUpdatable(value, arrRemover(["id"], Object.keys(this.rawAttributes))));
+        this.setDataValue("options", setValue(value,this.rawAttributes.options.defaultValue));
       }
     }
   },{

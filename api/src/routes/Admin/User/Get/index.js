@@ -2,7 +2,7 @@ const { Router } = require('express');
 const router = Router();
 const { User } = require("../../../../db");
 const {notFound, unknown} = require("../../../error.js");
-const { setUpdatable }=require("../../../../formatter");
+const { setUpdatables }=require("../../../routeFormatter");
 
 router.get("/user/get_users", async(req,res)=>{
   try{
@@ -12,7 +12,7 @@ router.get("/user/get_users", async(req,res)=>{
     })
     .then(users=>{
       if(users.rows.length){
-        setUpdatable(users, User); res.status(200).json(users);
+        setUpdatables(users, User); res.status(200).json(users);
       }else{
         res.status(404).json({errors:{not_found:notFound("Users")}});
       };

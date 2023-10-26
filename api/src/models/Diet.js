@@ -24,16 +24,6 @@ module.exports = (sequelize) => {
       validate:{
         len:[0, 100]
       }
-    },
-    options:{
-      type:JSON,
-      defaultValue: {
-        updatable:{"name":"string", "description":"string"},
-        deleteable:true
-      },
-      set(value){
-        this.setDataValue("options", setValue(value, this.rawAttributes.options.defaultValue));
-      }
     }
   },{
     timestamps:false

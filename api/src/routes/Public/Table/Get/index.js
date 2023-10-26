@@ -2,7 +2,7 @@ const {Router}=require("express");
 const router = Router();
 const {errJSON, notFound, unknown}=require("../../../error");
 const {Table}=require("../../../../db");
-const { setOptions }=require("../../../routeFormatter")
+const { getMany }=require("../../../routeFormatter")
 
 router.get("/get_table/:id",async(req,res)=>{
   try{
@@ -18,40 +18,9 @@ router.get("/get_table/:id",async(req,res)=>{
   };
 });
 
-router.get("/get_tables",async(req,res)=>{
+router.get("/get_tables",async(req,res)=>{ //GOTA UPDATE THIS ROUTE TO MAKE FILTERS WORK. UPDATE TABLE VALIDATORS.
   try{
-    Table.findAndCountAll({
-      offset:req.query.index,
-      limit:req.query.perPage,
-      attributes:{exclude:["options"]},
-    }).then(tables=>{
-      if(tables.rows&&tables.rows.length){
-        setOptions(tables); res.json(tables);
-      }else res.status(404).json(errJSON("not_found", notFound("Tables")));
-    });
-  }catch(err){
-    console.log(err);
-    res.status(500).json("unknown", unknown);
-  };
-});
-
-router.get("/get_by_filter",async(req,res)=>{
-  try{
-    res.locals.filter = {};
-    if(req.query.sits)res.locals.filter.sits=parseInt(req.query.sits);
-    if(req.query.sector)res.locals.filter.sector=req.query.sector;
-    if(Object.keys(res.locals.filter).length){
-      Table.findAndCountAll({
-        where:res.locals.filter,
-        attributes:{exclude:["options"]},
-        offset:req.query.index,
-        limit:req.query.perPage
-      }).then(tables=>{
-        if(tables.rows&&tables.rows.length){
-          setOptions(tables); res.json(tables);
-        }else res.status(404).json(errJSON("not_found", notFound("Tables")));
-      });
-    };
+    await getMany(Table, "Table", req.query, res, "Tables");
   }catch(err){
     console.log(err);
     res.status(500).json("unknown", unknown);

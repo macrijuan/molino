@@ -10,7 +10,7 @@ router.delete("/delete_table/:id",async(req,res)=>{
     .then(table=>{
       if(table){
         table.destroy({force:true})
-        .then(async ()=>{await getMany(Table, req.query, res, "Table");})
+        .then(async ()=>{await getMany(Table, "Table", req.query, res, "Table");})
       }else res.status(404).json(errJSON("not_found", notFound("Table")));
     });
   }catch(err){

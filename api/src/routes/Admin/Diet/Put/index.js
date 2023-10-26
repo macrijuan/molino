@@ -21,7 +21,7 @@ router.put("/update_diet/:id",
 					if(req.query.single==="t"){
 						res.json(diet);
 					}else{
-						await getMany(Diet, req.query, res, "Diets", diet.rawAttributes.options.defaultValue);
+						await getMany(Diet, "Diet", req.query, res, "Diets");
 					};
 				});
 			}else{

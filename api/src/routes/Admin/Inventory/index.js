@@ -1,10 +1,10 @@
 const{Router}=require("express");
 const router = Router();
-const postElement = require("./Post");
-const getElement = require("./Get");
-const putElement = require("./Put");
-const deleteElement = require("./Delete");
+const postInventory = require("./Post");
+const getInventory = require("./Get");
+const putInventory = require("./Put");
+const deleteInventory = require("./Delete");
 
-router.use("/inventory", postElement, getElement, putElement, deleteElement);
+router.use("/inventory", postInventory, getInventory, putInventory, deleteInventory);
 
 module.exports = router;

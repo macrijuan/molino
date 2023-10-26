@@ -1,18 +1,24 @@
 const {Router}=require("express");
 const router=Router();
-const {errJSON, unknown}=require("../../../error");
-const {Table} = require("../../../../db");
 const format = require("../Controller/format");
-const exisisting = require("../Controller/existing");
+const existing = require("../Controller/existing");
+const {Table} = require("../../../../db");
+const {getMany}=require("../../../routeFormatter");
+const {errJSON, unknown}=require("../../../error");
+
 
 router.post("/post_table",
   format,
-  exisisting,
+  existing,
   async(req,res)=>{   
   try{
-    Table.create({id:req.body.id, sits:req.body.sits, sector:req.body.sector})
-    .then(table=>{
-      res.json(table);
+    Table.create({name:req.body.name, sits:req.body.sits, sector:req.body.sector})
+    .then(async table=>{
+      if(req.query.single){
+        res.json(table);
+      }else{
+        await getMany(Table, "Table", req.query, res, "Tables");
+      };
     });
   }catch(err){
     console.log(err);

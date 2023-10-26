@@ -3,23 +3,16 @@ const router = Router();
 const {Admin}=require("../../../../db");
 const {Op}=require("sequelize");
 const {notFound, errJSON}=require("../../../error");
-const { setOptions }=require("../../../routeFormatter");
+const { getMany }=require("../../../routeFormatter");
 
 router.get("/get_admin_users", async(req,res)=>{
-  Admin.findAndCountAll({
+  res.locals.data = {
     attributes:{
       exclude:["password", "options"]
     },
     where:{email:{[Op.notLike]:"superAdmin@example.com"}},
-    offset:req.query.index,
-    limit:req.query.perPage
-  }).then(admins=>{
-    if(admins&&admins.rows.length){
-      setOptions(admins); res.json(admins);
-    }else{
-      res.status(404).json(errJSON("not_found", notFound("Administrators")));
-    };
-  });
+  };
+  await getMany(Admin, "Admin", req.query, res, "Administrators");
 });
 
 router.get("/get_admin_user/:id", async(req,res)=>{

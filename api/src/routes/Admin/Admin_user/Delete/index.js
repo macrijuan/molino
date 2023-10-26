@@ -13,7 +13,7 @@ router.delete("/delete_admin_user/:id",async(req,res)=>{
         if(typeof deletionActivated==="string"){
           res.json(errJSON("password", "Incorrect information."));
         }else{
-          await getMany(Admin, req.query, res, "Administrator");
+          await getMany(Admin, "Admin", req.query, res, "Administrator");
         };
       }else{
         res.status(404).json(errJSON("not_found", notFound("Administrator")));

@@ -9,11 +9,10 @@ router.get("/get_reservations", async(req,res)=>{
   try{
     Reservation.findAndCountAll({
       where:{expired:false},
-      attributes:{exclude:["options"]},
-      offset:req.query.index, limit:req.query.perPage
+      offset:(req.query.index || 0), limit:(req.query.perPage || 12)
     }).then(resrs=>{
       if(resrs&&resrs.rows.length){
-        setOptions(resrs); res.json(resrs);
+        res.json(resrs);
       }else{
         res.status(404).json(errJSON("not_found", notFound("Reservations")));
       };

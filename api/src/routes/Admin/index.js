@@ -7,7 +7,8 @@ const admin = require("./Admin_user");
 const inventory = require("./Inventory");
 const reservation = require("./Reservation");
 const table = require("./Table");
+const option = require("./Option");
 
-router.use( user, dish, diet, admin, inventory, reservation, table );
+router.use( user, dish, diet, admin, inventory, reservation, table, option );
 
 module.exports=router;

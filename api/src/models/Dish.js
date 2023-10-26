@@ -33,23 +33,7 @@ module.exports = (sequelize) => {
         arrValidation:function(value){arrayValidator(value, "Ingredient", 3, 30)}
       }
     },
-
-    diets:{
-      type: ARRAY(STRING),
-      allowNull: false,
-      set(value){
-        this.setDataValue("diets", value = dobleSpaceEraser(value));
-        this.setDataValue("diets", value.map(diet=>diet.toLowerCase()));
-      },
-      validate:{
-        arrValidation:function(value){arrayValidator(value, "Diet", 3, 30)}
-      }
-    },
-
-    // nutrients:{
-    //   type: JSON,
-    //   allowNull: false,
-    // },
+    
     description:{
       type: STRING,
       set(value){
@@ -84,25 +68,6 @@ module.exports = (sequelize) => {
       type:BOOLEAN,
       allowNull:false,
       defaultValue:true
-    },
-    options:{
-      type:JSON,
-      defaultValue:{
-        updatable:{
-          "name":"string",
-          "ingredients":"array",
-          "diets":"array",
-          "description":"string",
-          "image":"string",
-          "taste":["salty", "sweet", "sour", "bittersweet", "bitter", "spicy"],
-          "price":"string",
-          "available":"string"
-        },
-        deleteable:true
-      },
-      set(value){
-        this.setDataValue("options", setValue(value,this.rawAttributes.options.defaultValue));
-      }
     }
   },{
     timestamps:false

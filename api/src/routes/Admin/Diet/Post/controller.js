@@ -8,8 +8,8 @@ async function existingDiet(dietName){
     });
 };
 
-async function postDiet(dietName, description){
-    return Diet.create({name:dietName, description})
+async function postDiet(name, description){
+    return Diet.create({name, description})
     .then(res=>res);
 };
 

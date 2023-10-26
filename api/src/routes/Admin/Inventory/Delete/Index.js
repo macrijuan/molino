@@ -10,7 +10,7 @@ router.delete("/delete_inventory/:id",
       Inventory.findByPk(req.params.id)
       .then(inventory=>{
         if(inventory){
-          inventory.destroy({force:true}).then(async ()=>{await getMany(Inventory, req.query, res, "Inventory's element")});
+          inventory.destroy({force:true}).then(async ()=>{await getMany(Inventory, "Inventory", req.query, res, "Inventory's elements");});
         }else res.json(errJSON("not_found", notFound("Inventory's element")));
       });
     }catch(err){

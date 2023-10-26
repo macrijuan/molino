@@ -6,7 +6,7 @@ const existing = require("./Controller/existing");
 const{Admin}=require("../../../../db");
 const {Op}=require("sequelize");
 const {notFound, unknown, errJSON} = require("../../../error");
-const {setOptions}=require("../../../routeFormatter");
+const {getMany}=require("../../../routeFormatter");
 
 router.put("/update_admin_user/:id",
   (req,res,next)=>{res.locals.params=req.params; next();},
@@ -51,14 +51,7 @@ router.put("/update_admin_status/:id",
             if(req.query.single==="t"){
               res.json(admin);
             }else{
-              Admin.findAndCountAll(res.locals.data)
-              .then(admins=>{
-                if(admins&&admins.rows.length){
-                  setOptions(admins, Admin); res.json(admins);
-                }else{
-                  res.status(404).json(errJSON("not_found", notFound("Administrators")));
-                };
-              });
+              await getMany(Admin, "Admin", req.query, res, "Administrators");
             };
           });
         }else{

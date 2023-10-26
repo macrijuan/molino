@@ -1,18 +1,14 @@
-const { INTEGER, STRING, ENUM, JSON, BOOLEAN } = require("sequelize");
-const {setValue}=require("../formatter")
+const { INTEGER, STRING, ENUM } = require("sequelize");
 
 module.exports= (sequelize)=>{
   sequelize.define("table",{
-    id:{
+    name:{
       type:STRING,
-      primaryKey:true,
       unique:true,
+      allowNull:false,
       validate:{
         len:[1,30]
       },
-      set(value){
-        this.setDataValue("id", value.toUpperCase());
-      }
     },
     sits:{
       type: INTEGER,
@@ -30,13 +26,6 @@ module.exports= (sequelize)=>{
       },
       set(value){
         this.setDataValue("sector", value.toUpperCase());
-      }
-    },
-    options:{
-      type:JSON,
-      defaultValue:{updatable:{"id":"string", "sits":"string", "sector":["A", "I", "F", "VIP"]}, deleteable:true},
-      set(value){
-        this.setDataValue("options", setValue(value, this.rawAttributes.options.defaultValue));
       }
     }
   },

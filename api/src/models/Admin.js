@@ -49,15 +49,6 @@ module.exports = (sequelize) => {
       type:ENUM("active", "suspended", "quitted", "fired"),
       allowNull:false,
       defaultValue:"active"
-    },
-    options:{
-      type:JSON,
-      defaultValue: {
-        updatable:{"status":["active", "suspended", "quitted", "fired"]},
-      },
-      set(value){
-        this.setDataValue("options", setValue(value, this.rawAttributes.options.defaultValue));
-      }
     }
   },{
     timestamps:false

@@ -13,40 +13,56 @@ async function setOptions(data, model){
   };
 };
 
+function relationGetter(model, exclude, res ){
+  res.locals.data = { 
+    include:[ 
+      {
+        model, 
+        attributes:{ exclude:exclude },
+        through:{ attributes:[] }
+      } 
+    ],
+    distinct:true 
+  };
+};
+
 async function getMany(Model, modelName, query, res, notFoundData){
-  ///update_.../:id?perPage=...&index=...&...
-  const keys = Object.keys(query);
+  const keys = Object.keys;
+
   if(!res.locals.data)res.locals.data={};
   res.locals.data={
     ...res.locals.data,
-    attributes:{...res.locals.data.attributes, exclude:["optionId"]},
+    attributes:{...res.locals.data.attributes},
     limit:(query.perPage || 12),
     offset:(query.index || 0)
   };
-  const dataToSearch = keys.filter(prop=>(prop!=="perPage" && prop!=="index"));
-  if(dataToSearch.length){
-    res.locals.data.where={};
-    dataToSearch.forEach(prop=>{
-      const qryVal = eval(query[prop]);
-      if(typeof qryVal === "string"){
-        res.locals.data.where[prop] = { [Op.substring]: qryVal };
-      }else if( Array.isArray(qryVal) && prop !== "diets" ){
-        res.locals.data.where[prop] = { [Op.contains]: qryVal };
-      }else if(typeof qryVal === "number"){
-        res.locals.data.where[prop] = qryVal;
+  
+  const queries = keys(query).filter(prop=>(prop!=="perPage" && prop!=="index"));
+  if(queries.length){
+    if(!res.locals.data.where)res.locals.data.where={};
+    queries.forEach(prop=>{
+      if(!res.ignore){
+        switch(Model.getAttributes()[prop].type.constructor.key){
+          case "ARRAY": res.locals.data.where[prop]={ ...res.locals.data.where[prop], [Op.contains]:JSON.parse( query[prop].data ) };
+          break;
+          case "STRING": res.locals.data.where[prop]={ ...res.locals.data.where[prop], [Op.substring]:query[prop] };
+          break;
+          default: res.locals.data.where[prop]=query[prop];
+        };
       };
     });
   };
-  console.log(res.locals.data);
+  // console.log(res.locals.data);
   Model.findAndCountAll(res.locals.data)
-  .then(async _data=>{
+  .then(_data=>{
     if(_data&&_data.rows.length){
-      if(modelName==="Dish"){
+      if(modelName==="Dishes"){
         for(let a = 0; a<_data.rows.length; a++){
           _data.rows[a] = _data.rows[a].get({plain:true});
           _data.rows[a].diets = _data.rows[a].diets.map(diet=>diet.name);
         };
       };
+      console.log( _data.rows.map(e=>e.dataValues) );
       res.json(_data); 
     }else{
       res.status(404).json(errJSON("not_found", notFound(notFoundData)));
@@ -56,5 +72,6 @@ async function getMany(Model, modelName, query, res, notFoundData){
 
 module.exports = {
   setOptions,
+  relationGetter,
   getMany
 };

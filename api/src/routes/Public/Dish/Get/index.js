@@ -69,4 +69,16 @@ async(req,res)=>{
 	};
 });
 
+
+
+router.get("/test",
+async(req,res)=>{
+	try{
+		res.status(200).json(Dish.rawAttributes.taste.values);
+	}catch(err){
+		console.log(err);
+		res.status(500).json(errJSON("unknown", unknown));
+	};
+});
+
 module.exports = router;

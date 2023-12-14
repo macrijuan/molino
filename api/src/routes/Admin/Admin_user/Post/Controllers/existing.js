@@ -9,7 +9,7 @@ router.use(async(req,res,next)=>{
   })
   .then((existingData)=>{
     if(existingData){
-      res.status(409).json({errors:{email:[existing("email")]}});
+      res.status(409).json({ errors:{ email:[ existing("email") ] }, post:true });
     }else{
       next();
     };

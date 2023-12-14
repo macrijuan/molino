@@ -10,16 +10,21 @@ const {getMany}=require("../../../routeFormatter");
 
 router.put("/update_admin_user/:id",
   (req,res,next)=>{res.locals.params=req.params; next();},
-  format, existing, async(req,res)=>{
+  format, 
+  existing, 
+  async(req,res)=>{
   try{
       Admin.findByPk(req.params.id)
       .then(admin=>{
         if(admin){
           admin.update(req.body)
-          .then(update=>update.save())
-          .then(admin=>{res.json(admin);});
+          .then( update=>update.save()
+            .then( async ()=>{
+              await getMany(Admin, "Admins", req.query, res, "Administrators");
+            } ) 
+          );
         }else{
-          res.status(404).json({errors:{not_found:notFound("Administrator")}});
+          res.status(404).json( { errors:{ not_found: notFound("Administrator") }, update:true});
         };
       });
     }catch(err){
@@ -28,7 +33,7 @@ router.put("/update_admin_user/:id",
 });
 
 router.put("/update_admin_status/:id",
-	(req,res, next)=>{res.locals.params=req.params; res.locals.errors={}; next();},
+	(req,res, next)=>{ res.locals.params=req.params; res.locals.errors={}; next(); },
 	statusFormat,
  	async(req,res)=>{
 	try{

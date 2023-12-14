@@ -13,12 +13,12 @@ router.use(async(req,res,next)=>{
         if(diet.id == res.locals.params.id){
           if(diet.name===dobleSpaceEraser(req.body.name))res.locals.errors.name=[equalToCurent("name")];
           if(Object.keys(res.locals.errors).length){
-            res.status(409).json({errors:res.locals.errors});
+            res.status(409).json({errors:res.locals.errors, update:true});
           };
         }else{
           if(diet.name===req.body.name)res.locals.errors.name=[existingFor("name","diet")];
           if(Object.keys(res.locals.errors).length){
-            res.status(409).json({errors:res.locals.errors});
+            res.status(409).json({errors:res.locals.errors, update:true});
           };
         };
       }else{

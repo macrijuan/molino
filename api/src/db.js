@@ -32,29 +32,29 @@ sequelize.models = Object.fromEntries(capsEntries);
 const { Admin, Diet, Dish, Inventory, User, Reservation, Table, Option } = sequelize.models;
 
 // Aca vendrian las relaciones
-Reservation.hasOne(User);
-User.hasMany(Reservation);
+Reservation.hasOne( User );
+User.hasMany( Reservation );
 
-Reservation.hasOne(Table);
-Table.hasMany(Reservation);
+Table.hasMany( Reservation );//, { through:"table_reservations", timestamps:false }
+Reservation.hasOne( Table, {foreignKey:"ticket reserve", as:"ticket reserve"} );
 
-Admin.belongsTo(Option);
-Option.hasMany(Admin);
+Diet.belongsToMany( Dish, { through:"dish_diets", timestamps:false } );
+Dish.belongsToMany( Diet, { through:"dish_diets", timestamps:false } );
 
-Diet.belongsTo(Option);
-Option.hasMany(Diet);
+// Admin.belongsTo(Option);
+// Option.hasMany(Admin);
 
-Diet.belongsToMany(Dish, {through:"dish_diets", timestamps:false});
-Dish.belongsToMany(Diet, {through:"dish_diets", timestamps:false});
+// Diet.belongsTo(Option);
+// Option.hasMany(Diet);
 
-Dish.belongsTo(Option);
-Option.hasMany(Dish);
+// Dish.belongsTo(Option);
+// Option.hasMany(Dish);
 
-Inventory.belongsTo(Option);//, {foreignKey:"options"}
-Option.hasMany(Inventory);
+// Inventory.belongsTo(Option);
+// Option.hasMany(Inventory);
 
-Table.belongsTo(Option);
-Option.hasMany(Table);
+// Table.belongsTo(Option);
+// Option.hasMany(Table);
 
 // Check the exisisting models: uncoment line below.
 // console.log(sequelize.models);;

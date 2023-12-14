@@ -1,10 +1,10 @@
 const { Inventory }=require("../../../db");
-const {wrongLengthBetween, wrongNumberSize, wrongDataType, isMandatory}=require("../../error");
+const {wrongLengthBetween, wrongNumberSize, isMandatory}=require("../../error");
 
 function nameValidator(name, errors){
   errors.name = [];
   if(typeof name !== "string"){
-    errors.name.push(wrongDataType)
+    errors.name.push(isMandatory("name"));return;
   }else{
     if(name.length>30 || name.length<1) errors.name.push(wrongLengthBetween("name", 1, 30));
   };
@@ -13,7 +13,6 @@ function nameValidator(name, errors){
 
 function quantityValidator(quantity, errors){
   errors.quantity = [];
-  console.log(quantity);
   if(typeof quantity !== "number" || !quantity){
     errors.quantity.push(isMandatory("quantity"));
   }else{

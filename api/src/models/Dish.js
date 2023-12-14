@@ -30,7 +30,7 @@ module.exports = (sequelize) => {
         this.setDataValue("ingredients", value = value.map(i=>i.toLowerCase()));
       },
       validate:{
-        arrValidation:function(value){arrayValidator(value, "Ingredient", 3, 30)}
+        arrValidation:function(value){arrayValidator(value, "Ingredient", 1, 30)}
       }
     },
     

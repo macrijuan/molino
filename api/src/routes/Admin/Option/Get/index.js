@@ -22,7 +22,7 @@ router.get("/get_option", async(req,res)=>{
 					res.json(opt);
 				};
 			}else{
-				res.send(undefined);
+				res.json(null);
 			};
 		});
 	}catch(err){

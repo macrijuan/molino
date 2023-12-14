@@ -3,20 +3,12 @@ const router = Router();
 const {Op}=require("sequelize");
 const{ Reservation }=require("../../../../db");
 const {errJSON, unknown, notFound}=require("../../../error");
-const { setOptions }=require("../../../routeFormatter");
+const { getMany }=require("../../../routeFormatter");
 
 router.get("/get_reservations", async(req,res)=>{
   try{
-    Reservation.findAndCountAll({
-      where:{expired:false},
-      offset:(req.query.index || 0), limit:(req.query.perPage || 12)
-    }).then(resrs=>{
-      if(resrs&&resrs.rows.length){
-        res.json(resrs);
-      }else{
-        res.status(404).json(errJSON("not_found", notFound("Reservations")));
-      };
-    });
+    res.locals.data={ attributes:{ exclude:["tableId", "userId", "deletion_code"] } };
+    await getMany(Reservation, "Reservations", req.query, res, "Reservations");
   }catch(err){
     console.log(err);
     res.status(500).json(errJSON("unknown", unknown));
@@ -93,6 +85,17 @@ router.get("/get_by_time",async(req,res)=>{
         res.status(404).json(errJSON("not_found", notFound("Reservations")));
       };
     });
+  }catch(err){
+    console.log(err);
+    res.status(500).json(errJSON("unknown", unknown));
+  };
+});
+
+//////////////////////////////////////////////////////////////////////////////////////////////
+router.get("/test",async(req,res)=>{
+  try{
+    const t = "[1,2,3,4]"
+    res.send(JSON.parse(t));
   }catch(err){
     console.log(err);
     res.status(500).json(errJSON("unknown", unknown));

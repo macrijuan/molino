@@ -29,11 +29,11 @@ module.exports = (sequelize) => {
       }
     },
     unit:{
-      type:ENUM("Kg", "g", "oz", "ton", "lb", "u"),
+      type:ENUM("kg", "g", "oz", "ton", "lb", "u"),
       allowNull:false
     },
     class:{
-      type: ENUM("Vegetal", "Animal", "Mixed", "Furniture", "Tableware", "Dinner set", "Other"),
+      type: ENUM("vegetal", "animal", "mixed", "furniture", "tableware", "dinner set", "other"),
       allowNull:false,
     }
   },{

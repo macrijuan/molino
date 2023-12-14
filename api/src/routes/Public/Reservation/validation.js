@@ -1,9 +1,11 @@
-const {wrongNumberSize, isMandatory, wrongDataType, wrongLengthBetween}=require("../../error");
+const { wrongNumberSize, isMandatory }=require("../../error");
 
 function tableValidator (table, errors){
   errors.table = [];
-  if(typeof table !== "string"){errors.table.push(wrongDataType);return};
-  if(!(table.length<30 && table.length>0)) errors.table.push(wrongLengthBetween("Table ID", 30, 1));
+  if(
+    typeof table !== "number"
+    || (table>999 || table<1)
+  )errors.table.push(isMandatory("table"));
   if(!errors.table.length)delete errors.table;
 };
 
@@ -14,21 +16,48 @@ function customersValidator (customers, errors){
   if(!errors.customers.length)delete errors.customers;
 };
 
-function dateValidator (date, errors){
-  errors.date = [];
-  if(typeof date !== "string"){errors.date.push(wrongDataType);return};
-  if(!date) errors.date.push(isMandatory("date"));
-  const entringDate = new Date(date);
-  if(entringDate.toString()==="Invalid Date"){
-    errors.date.push("This is not a valid date.")
+function yearValidator (year, errors){
+  errors.year = [];
+  if(
+    typeof year !== "number"
+    || isNaN(year)
+    || year>new Date().getFullYear()+1
+  ) errors.year.push(isMandatory("year"));
+  if(!errors.year.length)delete errors.year;
+};
+
+function monthValidator (month, errors){
+  errors.month = [];
+  if(
+    typeof month !== "number"
+    || isNaN(month) 
+    || (month>12 || month<1)
+  ) errors.month.push(isMandatory("month"));
+  if(!errors.month.length)delete errors.month;
+}; 
+
+function dayValidator (day, errors){
+  errors.day = [];
+  if(
+    typeof day !== "number"
+    || isNaN(day)
+    || (day>31 || day<1)
+  ) errors.day.push(isMandatory("day"));
+  if(!errors.day.length)delete errors.day;
+};
+
+function timeValidator( time, errors ){
+  errors.time=[];
+  if( typeof time === "string" && time.length === 5 ){
+    const timeFormat = time.split(":");
+    if(
+      timeFormat.length !== 2
+      || timeFormat.filter( n=>!(/^[\d]{2}$/).test(n) ).length
+    )errors.time.push(isMandatory("time"));
   }else{
-    if(entringDate.getTime()<Date.now()){
-      errors.date.push("Is not possible to reserve for a passed day.");
-    }else if((entringDate.getTime()-Date.now())>2147483647){
-      errors.date.push("Reservations of more than 24 days are not allowed."); 
-    };
+    errors.time.push(isMandatory("time"));
   };
-  if(!errors.date.length)delete errors.date;
+  if(!errors.time.length)delete errors.time;
 };
 
 function userOwnerValidator (user, errors){
@@ -40,6 +69,9 @@ function userOwnerValidator (user, errors){
 module.exports = {
   tableValidator,
   customersValidator,
-  dateValidator,
+  yearValidator,
+  monthValidator,
+  dayValidator,
+  timeValidator,
   userOwnerValidator
 };

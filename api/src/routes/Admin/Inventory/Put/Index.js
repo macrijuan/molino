@@ -7,7 +7,7 @@ const {getMany}=require("../../../routeFormatter");
 const {notFound, unknown, errJSON} = require("../../../error");
 
 router.put("/update_inventory/:id",
-	(req,res, next)=>{res.locals.params=req.params; res.locals.errors={}; next();},
+	(req,res, next)=>{ res.locals.params=req.params; res.locals.errors={}; next(); },
 	format,
  	existing,
  	async(req,res)=>{

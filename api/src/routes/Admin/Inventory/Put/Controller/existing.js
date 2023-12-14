@@ -10,10 +10,10 @@ router.use(async (req,res, next)=>{
         where:{name:req.body.name}
       }).then(element=>{
         if(element){
-          if(element.id===parseInt(res.locals.id)){
-            res.json(errJSON("name", equalToCurent("name")));
+          if(element.id===parseInt(res.locals.params.id)){
+            res.json({errors:{ name:[equalToCurent("name")] }, update:true });
           }else{ 
-            res.json(errJSON("name", existing("name")));
+            res.json({errors:{ name:[existing("name")] }, update:true });
           };
         }else{
           next();

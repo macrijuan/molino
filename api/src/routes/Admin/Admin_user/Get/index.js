@@ -8,11 +8,11 @@ const { getMany }=require("../../../routeFormatter");
 router.get("/get_admin_users", async(req,res)=>{
   res.locals.data = {
     attributes:{
-      exclude:["password", "options"]
+      exclude:["password"]
     },
-    where:{email:{[Op.notLike]:"superAdmin@example.com"}},
+    where:{email:{[Op.notLike]:"superadmin@example.com"}},
   };
-  await getMany(Admin, "Admin", req.query, res, "Administrators");
+  await getMany(Admin, "Admins", req.query, res, "Administrators");
 });
 
 router.get("/get_admin_user/:id", async(req,res)=>{

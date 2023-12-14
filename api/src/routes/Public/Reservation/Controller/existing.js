@@ -9,7 +9,10 @@ router.use(async(req,res,next)=>{
   try{
     Reservation.findOne({
       where:{
-        date: req.body.date,
+        year: req.body.year,
+        month: req.body.month,
+        day: req.body.day,
+        time: req.body.time,
         tableId: req.body.table
       }
     }).then(resr=>{

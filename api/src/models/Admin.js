@@ -1,5 +1,4 @@
 const { STRING, ENUM, JSON } = require('sequelize');
-const { setValue }=require("../formatter");
 
 module.exports = (sequelize) => {
   sequelize.define('admin', {
@@ -16,6 +15,9 @@ module.exports = (sequelize) => {
       validate:{
         isEmail:true,
         len:[7,254]
+      },
+      set(value){
+        this.setDataValue("email", value.toLowerCase());
       }
     },
     password:{
@@ -29,7 +31,10 @@ module.exports = (sequelize) => {
       type: STRING,
       allowNull: false,
       set(value){
-        this.setDataValue("first_name", value.toUpperCase());
+        this.setDataValue("first_name", value.toLowerCase());
+      },
+      get(){
+        return this.getDataValue("first_name").toUpperCase()
       },
       validate:{
         len:[2,35]
@@ -39,7 +44,10 @@ module.exports = (sequelize) => {
       type:STRING,
       allowNull: false,
       set(value){
-        this.setDataValue("last_name", value.toUpperCase());
+        this.setDataValue("last_name", value.toLowerCase());
+      },
+      get(){
+        return this.getDataValue("last_name").toUpperCase();
       },
       validate:{
         len:[2,35]

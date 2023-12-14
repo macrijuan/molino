@@ -8,6 +8,7 @@ router.get("/get_inventory", async (req,res)=>{
   try{
     await getMany(Inventory, "Inventory", req.query, res, "Inventory's elements");
   }catch(err){
+    console.log(err);
     res.status(500).json({errors:{unknown:unknown}});
   };
 });

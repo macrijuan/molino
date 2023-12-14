@@ -3,39 +3,84 @@ const {wrongDataType, wrongLengthBetween, wrongLengthBetweenArr, wrongCharType, 
 //nameValidator --> name=string, errors=arr. || fills errors.name with error messeges if format not allowed.
 function nameValidator(name, errors){
   errors.name=[];
-  if(!name){errors.name.push(isMandatory("name"));return;};
-  if(typeof name !== "string") {errors.name=[wrongDataType]; return;};
+  console.log("name",name);
+  if(!name||typeof name !== "string" || !name.length){errors.name.push(isMandatory("name"));return;};
   if(name.length>30 || name.length<3)  {errors.name=[wrongLengthBetween("name", 3, 30)];};
   if(!errors.name.length)delete errors.name;
 };
 
 //ingredientsValidator --> ingrs=array, errors=arr. || fills errors.ingredients with error messeges if format not allowed.
-function ingredientsValidator(ingrs, errors){
+function ingredientsValidator(ingrs, errors, isUpdate){
   errors.ingredients=[];
-  if(!Array.isArray(ingrs)) {errors.ingredients.push(wrongDataType); return;};
-  if(!ingrs.length) errors.ingredients.push(isMandatory("Ingredient filed"));
-  let a = 0;
-  while(a<ingrs.length){
-    if(typeof ingrs[a] !== "string") {errors.ingredients = [wrongDataType]; return;};
-    if(ingrs[a].length>30 || ingrs[a].length<2) errors.ingredients.push(wrongLengthBetweenArr("ingredient", 2, 30, ingrs[a]));
-    if(!(/^.[a-zà-ÿ ]{2,30}$/.test(ingrs[a]))) errors.ingredients.push(wrongCharType("ingredient", "letters and spaces", ingrs[a]));
-    if(ingrs.filter(e=>e===ingrs[a]).length>1)errors.ingredients.push(copyedData(ingrs[a]));
-    a++;
-  };
+  if(isUpdate){
+    const keys=Object.keys(ingrs);
+    if(
+      !(typeof ingrs==="object" && Array.isArray(ingrs.data))
+        ||
+      keys.length!==2 || keys.filter(prop=>!(prop==="method" || prop==="data")).length 
+        || 
+      !ingrs.data.length
+      ){ errors.ingredients.push(isMandatory("Ingredients"));return;};
+    let a = 0;
+    while(a<ingrs.data.length){
+      if(typeof ingrs.data[a] !== "string") {errors.ingredients = [wrongDataType]; return;};
+      if(ingrs.data[a].length>30 || ingrs.data[a].length<1) errors.ingredients.push(wrongLengthBetweenArr("ingredient", 2, 30, ingrs.data[a]));
+      if(!(/^.[a-zà-ÿ ]{1,30}$/.test(ingrs.data[a]))) errors.ingredients.push(wrongCharType("ingredient", "letters and spaces", ingrs.data[a]));
+      if(ingrs.data.filter(e=>e===ingrs.data[a]).length>1)errors.ingredients.push(copyedData(ingrs.data[a]));
+      a++;
+    };
+  }else{
+    if(
+      !(typeof ingrs==="object" && Array.isArray(ingrs.data))
+        || 
+      !ingrs.data.length
+      ){ errors.ingredients.push(isMandatory("Ingredients"));return;};
+    let a = 0;
+    while(a<ingrs.length){
+      if(typeof ingrs.data[a] !== "string") {errors.ingredients = [wrongDataType]; return;};
+      if(ingrs.data[a].length>30 || ingrs.data[a].length<1) errors.ingredients.push(wrongLengthBetweenArr("ingredient", 2, 30, ingrs.data[a]));
+      if(!(/^.[a-zà-ÿ ]{1,30}$/.test(ingrs.data[a]))) errors.ingredients.push(wrongCharType("ingredient", "letters and spaces", ingrs.data[a]));
+      if(ingrs.data.filter(e=>e===ingrs.data[a]).length>1)errors.ingredients.push(copyedData(ingrs.data[a]));
+      a++;
+    };
+  }
   if(!errors.ingredients.length)delete errors.ingredients;
 };
 
 //dietsValidator --> diets=array, errors=arr. || fills errors.diets with error messeges if format not allowed.
-function dietsValidator(diets, errors){
+function dietsValidator(diets, errors, isUpdate){
   errors.diets=[];
-  if(!Array.isArray(diets)) {errors.diets.push(wrongDataType); return;};
-  if(!diets.length)errors.diets.push(emptyData("dish", "diet"));
-  let a = 0;
-  while(a<diets.length){
-    if(typeof diets[a] !== "string")  {errors.diets.push(wrongDataType); return};
-    if(diets[a].length>30 || diets[a].length<2) errors.diets.push(wrongLengthBetweenArr("diet", 2, 30, diets[a]));
-    if(!(/^.[a-zà-ÿ]{2,30}$/.test(diets[a]))) errors.diets.push(wrongCharType("diet", "letters", diets[a]));
-    a++;
+  const keys = Object.keys(diets);
+  if(isUpdate){
+    if(
+      !(typeof diets==="object" && Array.isArray(diets.data))
+        ||
+      keys.length!==2 || keys.filter(prop=>!(prop==="method" || prop==="data")).length
+        || 
+      !diets.data.length
+    ){errors.diets.push(isMandatory("diets"));return;};
+    let a = 0;
+    while(a<diets.data.length){
+      if(typeof diets.data[a] !== "string")  {errors.diets.push(wrongDataType); return};
+      if(diets.data[a].length>30 || diets.data[a].length<2) errors.diets.push(wrongLengthBetweenArr("diet", 2, 30, diets.data[a]));
+      if(!(/^.[a-zà-ÿ]{1,30}$/.test(diets.data[a]))) errors.diets.push(wrongCharType("diet", "letters", diets.data[a]));
+      a++;
+    };
+  }else{
+    if(
+      !(typeof diets==="object" && Array.isArray(diets.data))
+        ||
+      keys.length!==1
+        || 
+      !diets.data.length
+    ){errors.diets.push(isMandatory("diets"));return;};
+    let a = 0;
+    while(a<diets.data.length){
+      if(typeof diets.data[a] !== "string")  {errors.diets.push(wrongDataType); return};
+      if(diets.data[a].length>30 || diets.data[a].length<2) errors.diets.push(wrongLengthBetweenArr("diet", 2, 30, diets.data[a]));
+      if(!(/^.[a-zà-ÿ]{1,30}$/.test(diets.data[a]))) errors.diets.push(wrongCharType("diet", "letters", diets.data[a]));
+      a++;
+    };
   };
   if(!errors.diets.length)delete errors.diets;
 };
@@ -43,7 +88,7 @@ function dietsValidator(diets, errors){
 //descriptionValidator --> desc=string, errors=arr. || fills errors.description with error messeges if format not allowed.
 function descriptionValidator(desc, errors){
   errors.description=[];
-  if(typeof desc !== "string") {errors.description.push(wrongDataType); return;};
+  if(typeof desc !== "string") {errors.description.push(isMandatory("description")); return;};
   if(desc.length>500) errors.description.push("The description is too long. 500 character maximum.");
   if(!errors.description.length)delete errors.description;
 };
@@ -51,7 +96,7 @@ function descriptionValidator(desc, errors){
 //imageValidator --> image=string, errors=arr. || fills errors.image with error messeges if format not allowed.
 function imageValidator(image, errors){
   errors.image=[];
-  if(typeof image !== "string") {errors.image.push(wrongDataType); return;};
+  if(typeof image !== "string") {errors.image.push(isMandatory("image")); return;};
   if(image.length>10000)errors.image.push("The length of the image's path (link) is too long.");
   if(!errors.image.length)delete errors.image;
 };

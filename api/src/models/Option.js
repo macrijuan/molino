@@ -10,6 +10,12 @@ module.exports = (sequelize) => {
         len:[1,30]
       }
     },
+    gettable:{
+      type:JSON,
+      validate:{
+        isCorrectJSON:function(value){jsonValidator(value)}
+      }
+    },
     updatable:{
       type:JSON,
       validate:{

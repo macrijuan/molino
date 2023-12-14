@@ -2,37 +2,51 @@ const { Router } = require('express');
 const router = Router();
 const { Dish, Diet }=require("../../../../db")
 const { unknown, errJSON } = require("../../../error");
-const { getMany }=require("../../../routeFormatter");
+const { getMany, relationGetter }=require("../../../routeFormatter");
+const { Op } = require("sequelize");
 const format = require("./Controller/format");
 const existing = require("./Controller/existing");
 
 router.post("/post_dish",
 format,
 existing,
-async(req,res)=>{
+async( req, res )=>{
 	try{
-		const {name, ingredients, diets, description, image, taste, price, available}=req.body;
+		const { name, ingredients,  description, image, taste, price, available, diets }=req.body;
     Dish.create({
-      name, ingredients, diets, description, image, taste, price, available:eval(available)
-    }).then(async (newDish)=>{
-			if(req.query.single){
-				res.json(newDish);
-			}else{
-				res.locals.data = {attributes:{include:{model:Diet, exclude:["id"]}}};
-				await getMany(Dish, "Dish", req.query, res, "Dishes");
-			};
+      name, ingredients:ingredients.data, description, image, taste, price, available:available==="false"?false:true
+    }).then( async (newDish)=>{
+			Diet.findAll({
+				where:{
+					name:{ [Op.in]:diets.data }
+				}
+			}).then( async _diets=>{
+				newDish.addDiets(_diets )
+				.then( async ()=>{
+					relationGetter(Diet, ["id", "description", "optionId"], res);
+					await getMany(Dish, "Dishes", req.query, res, "Dishes" );
+				});
+			});
     });
 	}catch(err){
 		console.log(err);
-		res.status(500).json({errors:{unknown:unknown}});
+		res.status(500).json(errJSON("unknown", unknown));
 	};
 });
 
 // router.post("/test", async(req,res)=>{
-// 	Dish.findAndCountAll({limit:3, offset:0, include:Options, attributes:{exclude:["options"]}})
-// 	.then(result=>{
-// 		res.json(result);
-// 	});
+// 	// relationGetter(Diet, ["id", "description", "optionId"], res);
+// 	Dish.findByPk(req.query.id,{ 
+//     include:[ 
+//       {
+//         model:Diet, 
+//         attributes:{ exclude:["id", "description", "optionId"] },
+//         through:{ attributes:[] }
+//       } 
+//     ],
+//     distinct:true,
+// 		attributes:{ exclude:["optionId"] },
+//   }).then(dish=>{res.json(dish)});
 // });
 
 module.exports = router;

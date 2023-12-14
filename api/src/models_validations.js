@@ -7,8 +7,8 @@ function arrayValidator(array, dataName, minLen, maxLen){
 	let a = 0;
 	while(a<array.length){
 		if(typeof array[a] !== "string") {throw new Error(`The array can only have strings`);};
-		if(array[a].length>30 || array[a].length<2) {throw new Error(`Array elements must contain between ${minLen} and ${maxLen} characters. Index: ${a}`);};
-		if(!(/^.[a-zà-ÿ ]{2,30}$/.test(array[a]))) {throw new Error(`Array elements can only contain lowercase letters and spaces. Index's failed element: ${a}`);};
+		if(array[a].length>30 || !array[a].length) {throw new Error(`Array elements must contain between ${minLen} and ${maxLen} characters. Index: ${a}. Element: ${array[a]}`);};
+		if(!(/^.[a-zà-ÿ ]{0,30}$/.test(array[a]))) {throw new Error(`Array elements can only contain lowercase letters and spaces. Index element: ${a}. Element: ${array[a]}`);};
 		a++;
 	};
 };
@@ -26,7 +26,7 @@ function jsonValidator(json, keys, values){
 	if(keys.length>30)err(jsonValidator.name, "The object has too many properties.");
 	values.forEach(v=>{
 		if(typeof v === "string"){
-			if(!(v==="string" || v==="array" || v==="array_select"))err(jsonValidator.name, "String value is not allowed");
+			if(!(v==="string" || v==="array" || v==="number"))err(jsonValidator.name, "String value is not allowed");
 		}
 		else if(Array.isArray(v)){
 			if(v.length>30)err(jsonValidator.name, "The array has too many elements.");

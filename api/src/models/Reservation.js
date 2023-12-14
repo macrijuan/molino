@@ -1,6 +1,6 @@
 const {timeValidator}=require("../models_validations");
-const {STRING, INTEGER, UUID, UUIDV4, TIME, BOOLEAN, DATE, ENUM, DATEONLY, ARRAY}=require("sequelize");
-const { dateValidator } = require("../routes/Public/Reservation/validation");
+const {STRING, INTEGER, UUID, UUIDV4, TIME, BOOLEAN, DATE, ENUM, DATEONLY, ARRAY, VIRTUAL, INET}=require("sequelize");
+const { yearValidator } = require("../routes/Public/Reservation/validation");
 module.exports= (sequelize)=>{
   sequelize.define("reservation",{
     ticket:{
@@ -11,27 +11,27 @@ module.exports= (sequelize)=>{
       allowNull: false,
       // defaultValue:UUIDV4
     },
-    date:{
-      type: DATE,
+    year:{
+      type: INTEGER,
       allowNull:false
     },
+    month:{
+      type: INTEGER,
+      allowNull:false,
+      validate:{
+        max:12, min:1
+      }
+    },
     day:{
-      type: DATEONLY,
-      get(){
-        return this.date.toISOString().split("T")[0];
+      type: INTEGER,
+      allowNull:false,
+      validate:{
+        max:31, min:1
       }
     },
     time: {
       type: TIME,
-      get(){
-        return `${this.date.getHours()}:${this.date.getMinutes()}`
-      }
-    },
-    meridiem_time:{
-      type: ENUM("am", "pm"),
-      get(){
-        if(this.date.getHours()<12){return "am"}else{return "pm"};
-      },
+      allowNull:false,
     },
     expired:{
       type: BOOLEAN,

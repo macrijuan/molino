@@ -1,7 +1,5 @@
-const obj = {};
-const t = "['hola']";
-const p = eval(t);
+const moment = require("moment")();
+const date = new Date();
 
-obj.test = p;
-
-console.log(typeof obj.test);
+console.log(parseInt(moment.format("YYYY"))+1);
+console.log(date.getFullYear()+1);

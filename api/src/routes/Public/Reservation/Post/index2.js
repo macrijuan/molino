@@ -16,11 +16,12 @@ async(req,res)=>{
     User.findByPk(req.params.user)
     .then(async user=>{
       if(user){
-        res.locals.date = new Date(req.body.date);
         res.locals.ticket = undefined;
+        console.log("TIME:", res.locals.date.getTime() -  Date.now());
         const timer = setTimeout(async ()=>{
           Reservation.findByPk(res.locals.ticket)
           .then(async resr=>{
+            console.log(resr);
             if(resr){
               resr.update({expired:true})
               .then(resr=>resr.save()
@@ -30,17 +31,24 @@ async(req,res)=>{
               ));
             };
           });
-        }, res.locals.date.getTime() -  Date.now() + 900000); // The client holds the reservation during extra 15 mins = 900000 ms
+        }, res.locals.date.getTime() -  Date.now() + 900000); // The restaurant holds the reservation during extra 15 mins = 900000 ms
         Table.findByPk(req.body.table)
         .then(async table=>{
-          Reservation.create({date:req.body.date, deletion_code:Number(timer), userId:user.id, tableId:table.id})
-          .then(async resr=>{
+          Reservation.create({
+            year:req.body.year,
+            month:req.body.month,
+            day:req.body.day,
+            time:req.body.time,
+            deletion_code:parseInt(timer),
+            userId:user.id,
+            tableId:table.id
+          }).then(async resr=>{
             if(resr){
-              delete resr.dataValues.updatable;
+              res.locals.ticket = resr.ticket;
               res.json(resr);
               await resr.setUser(user);
               await resr.setTable(table);
-            }else res.status(500).json(errJSON("unknown",unknown));
+            }else {res.status(500).json(errJSON("unknown",unknown));};
           });
         });
       }else{

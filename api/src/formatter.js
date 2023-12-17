@@ -1,7 +1,6 @@
 //dobleSpaceEraser recives a string, turns any doble spaces into single one and returns the new string.
 function dobleSpaceEraser (str){
   let string = str;
-  console.log(str);
   if(Array.isArray(str)){
     string.forEach(e=>{
       while(e.split("  ").length>1){

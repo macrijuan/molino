@@ -2,10 +2,25 @@ const { Sequelize } = require('sequelize');
 const fs = require('fs');
 const path = require('path');
 require("dotenv").config();
-const {DB_USER, DB_PASSWORD, DB_HOST, DB_NAME}=process.env;
+const {
+  LOCAL_DB_USER, LOCAL_DB_PASSWORD, LOCAL_DB_HOST, LOCAL_DB_NAME, 
+  DB_USER, DB_PASSWORD, DB_HOST, DB_NAME,
+  ENVIORMENT
+}=process.env;
 
-const sequelize = new Sequelize(`postgres://${DB_USER}:${DB_PASSWORD}@${DB_HOST}/${DB_NAME}`, {
-  logging: false,// //false //console.log //set to console.log to see the raw SQL queries
+console.log( "LOCAL DATA:" );
+console.log( LOCAL_DB_USER, LOCAL_DB_PASSWORD, LOCAL_DB_HOST, LOCAL_DB_NAME );
+console.log( "HOSTED DATA:" );
+console.log( DB_USER, DB_PASSWORD, DB_HOST, DB_NAME );
+console.log( ENVIORMENT );
+
+let sequelize = ENVIORMENT === "live"
+? new Sequelize(`postgres://${DB_USER}:${DB_PASSWORD}@${DB_HOST}/${DB_NAME}`, {
+  logging: console.log,//false, //set to console.log to see the raw SQL queries
+  native: false, // lets Sequelize know we can use pg-native for ~30% more speed
+})
+: new Sequelize(`postgres://${LOCAL_DB_USER}:${LOCAL_DB_PASSWORD}@${LOCAL_DB_HOST}/${LOCAL_DB_NAME}`, {
+  logging: console.log, //set to console.log to see the raw SQL queries
   native: false, // lets Sequelize know we can use pg-native for ~30% more speed
 });
 
@@ -13,48 +28,34 @@ const basename = path.basename(__filename);
 
 const modelDefiners = [];
 
-// Leemos todos los archivos de la carpeta Models, los requerimos y agregamos al arreglo modelDefiners
-fs.readdirSync(path.join(__dirname, '/models'))
-  .filter((file) => (file.indexOf('.') !== 0) && (file !== basename) && (file.slice(-3) === '.js'))
-  .forEach((file) => {
-    modelDefiners.push(require(path.join(__dirname, '/models', file)));
-  });
+fs
+.readdirSync(path.join(__dirname, '/models'))
+.filter((file) => (
+  file.indexOf('.') !== 0) &&
+  (file !== basename) &&
+  (file.slice(-3) === '.js')
+)
+.forEach((file) => {
+  modelDefiners.push(require(path.join(__dirname, '/models', file)));
+});
 
-// Injectamos la conexion (sequelize) a todos los modelos
+
 modelDefiners.forEach(model => model(sequelize));
-// Capitalizamos los nombres de los modelos ie: product => Product
+
 let entries = Object.entries(sequelize.models);
 let capsEntries = entries.map((entry) => [entry[0][0].toUpperCase() + entry[0].slice(1), entry[1]]);
 sequelize.models = Object.fromEntries(capsEntries);
 
-// En sequelize.models están todos los modelos importados como propiedades
-// Para relacionarlos hacemos un destructuring
 const { Admin, Diet, Dish, Inventory, User, Reservation, Table, Option } = sequelize.models;
 
-// Aca vendrian las relaciones
 Reservation.hasOne( User );
 User.hasMany( Reservation );
 
-Table.hasMany( Reservation );//, { through:"table_reservations", timestamps:false }
+Table.hasMany( Reservation );
 Reservation.hasOne( Table, {foreignKey:"ticket reserve", as:"ticket reserve"} );
 
 Diet.belongsToMany( Dish, { through:"dish_diets", timestamps:false } );
 Dish.belongsToMany( Diet, { through:"dish_diets", timestamps:false } );
-
-// Admin.belongsTo(Option);
-// Option.hasMany(Admin);
-
-// Diet.belongsTo(Option);
-// Option.hasMany(Diet);
-
-// Dish.belongsTo(Option);
-// Option.hasMany(Dish);
-
-// Inventory.belongsTo(Option);
-// Option.hasMany(Inventory);
-
-// Table.belongsTo(Option);
-// Option.hasMany(Table);
 
 // Check the exisisting models: uncoment line below.
 // console.log(sequelize.models);;

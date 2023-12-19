@@ -40,7 +40,9 @@ router.get("/login", async(req,res)=>{
       if(admin.password===req.query.password){
         delete admin.dataValues.password;
         res.json(admin);
-      }else res.status(403).json(errJSON("password", "The password is incorrect."));
+      }else{
+        res.status(403).json(errJSON("password", "The password is incorrect."));
+      };
     }else{
       res.status(404).json(errJSON("not_found", notFound("Administrator")));
     };

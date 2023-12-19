@@ -8,7 +8,8 @@ const {unknown, errJSON}=require("../../../error");
 const {dobleSpaceEraser}=require("../../../../formatter");
 
 router.post("/post_admin_user/:code",
-(req,res,next)=>{res.locals.auth=req.params.code;next()}, authorization,
+(req,res,next)=>{res.locals.auth=req.params.code;next()},
+authorization,
 format,
 existing,
 async(req,res)=>{

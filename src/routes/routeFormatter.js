@@ -62,7 +62,6 @@ async function getMany(Model, modelName, query, res, notFoundData){
           _data.rows[a].diets = _data.rows[a].diets.map(diet=>diet.name);
         };
       };
-      console.log( _data.rows.map(e=>e.dataValues) );
       res.json(_data); 
     }else{
       res.status(404).json(errJSON("not_found", notFound(notFoundData)));

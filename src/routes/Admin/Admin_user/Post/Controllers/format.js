@@ -10,6 +10,7 @@ router.use(async(req, res, next)=>{
       req.body[prop]=req.body[prop].toLowerCase();
     });
     res.locals.approved = [];
+    res.locals.errors={};
     emailValidator(email, res.locals.errors);
     passwordValidator(password, res.locals.errors, res.locals.approved);
     namesValidator(first_name, res.locals.errors, "first name");

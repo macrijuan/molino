@@ -1,1 +1,1 @@
-console.log(Number("asdf"));
+console.log(JSON.parse( "[1,2,3,4]"));

@@ -20,7 +20,7 @@ router.get("/get_table/:id",async(req,res)=>{
 
 router.get("/get_tables",async(req,res)=>{ //GOTA UPDATE THIS ROUTE TO MAKE FILTERS WORK. UPDATE TABLE VALIDATORS.
   try{
-    await getMany(Table, "Table", req.query, res, "Tables");
+    await getMany(Table, req.query, res, "Tables");
   }catch(err){
     console.log(err);
     res.status(500).json("unknown", unknown);

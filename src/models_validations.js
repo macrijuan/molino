@@ -26,7 +26,7 @@ function jsonValidator(json, keys, values){
 	if(keys.length>30)err(jsonValidator.name, "The object has too many properties.");
 	values.forEach(v=>{
 		if(typeof v === "string"){
-			if(!(v==="string" || v==="array" || v==="number"))err(jsonValidator.name, "String value is not allowed");
+			if(!(v==="string" || v==="array" || v==="number" || v==="time"))err(jsonValidator.name, "String value is not allowed");
 		}
 		else if(Array.isArray(v)){
 			if(v.length>30)err(jsonValidator.name, "The array has too many elements.");

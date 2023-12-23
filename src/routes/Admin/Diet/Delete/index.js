@@ -9,7 +9,7 @@ router.delete("/delete_diet/:id", async(req,res)=>{
     Diet.findByPk(req.params.id)
     .then(diet=>{
       if(diet){
-        diet.destroy({force:true}).then(async ()=>{await getMany(Diet, "Diet", req.query, res, "Diets");});
+        diet.destroy({force:true}).then(async ()=>{await getMany(Diet, req.query, res, "Diets");});
       }else{
         res.status(404).json({errors:{not_found:notFound("Diet")}});
       };

@@ -9,6 +9,7 @@ const reservation = require("./Reservation");
 const table = require("./Table");
 const option = require("./Option");
 
-router.use( async( req, res, next) =>{ setTimeout(()=>{ next() }, 1000); }, user, dish, diet, admin, inventory, reservation, table, option );
+// async( req, res, next) =>{ setTimeout(()=>{ next() }, 1000); }, 
+router.use( user, dish, diet, admin, inventory, reservation, table, option );
 
 module.exports=router;

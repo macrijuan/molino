@@ -53,7 +53,7 @@ module.exports = (sequelize) => {
     },
 
     taste:{
-      type:ENUM("salty", "sweet", "sour", "bittersweet", "bitter", "spicy"),
+      type:ENUM('salty', 'sweet', 'sour', 'bittersweet', 'bitter', 'spicy'),
       allowNull:false
     },
     price:{

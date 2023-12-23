@@ -27,7 +27,7 @@ router.post("/post_diet",async(req,res)=>{
 						if(req.query.single){
 							res.json(diet);
 						}else{
-							await getMany(Diet, "Diets", req.query, res, "Diets");
+							await getMany(Diet, req.query, res, "Diets");
 						};
 					});
 				};

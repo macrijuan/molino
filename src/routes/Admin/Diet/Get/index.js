@@ -8,7 +8,7 @@ const { getMany } = require("../../../routeFormatter.js");
 
 router.get("/get_diets", async(req,res)=>{
   try{
-    await getMany(Diet, "Diet", req.query, res, "Diets");
+    await getMany(Diet, req.query, res, "Diets");
   }catch(err){
     res.status(500).json({errors:{unknown:unknown}});
   }

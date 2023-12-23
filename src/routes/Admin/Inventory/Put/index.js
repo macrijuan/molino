@@ -21,7 +21,7 @@ router.put("/update_inventory/:id",
 					if(req.query.single==="t"){
 						res.json(inventory);
 					}else{
-						await getMany(Inventory, "Inventory", req.query, res, "Inventory's elements");
+						await getMany(Inventory, req.query, res, "Inventory's elements");
 					};
 				});
 			}else{

@@ -16,7 +16,7 @@ router.post("/post_inventory",
         if(req.query.single){
           res.json(e);
         }else{
-          await getMany(Inventory, "Inventory", req.query, res, "Inventory's elements");
+          await getMany(Inventory, req.query, res, "Inventory's elements");
         };
       });
     }catch(err){

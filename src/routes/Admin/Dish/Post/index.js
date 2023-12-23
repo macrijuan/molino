@@ -1,7 +1,7 @@
 const { Router } = require('express');
 const router = Router();
 const { Dish, Diet }=require("../../../../db")
-const { unknown, errJSON } = require("../../../error");
+const { unknown, errJSON, notFound } = require("../../../error");
 const { getMany, relationGetter }=require("../../../routeFormatter");
 const { Op } = require("sequelize");
 const format = require("./Controller/format");
@@ -21,11 +21,15 @@ async( req, res )=>{
 					name:{ [Op.in]:diets.data }
 				}
 			}).then( async _diets=>{
-				newDish.addDiets(_diets )
-				.then( async ()=>{
-					relationGetter(Diet, ["id", "description", "optionId"], res);
-					await getMany(Dish, "Dishes", req.query, res, "Dishes" );
-				});
+				if(_diets.length){
+					newDish.addDiets(_diets )
+					.then( async ()=>{
+						relationGetter(Diet, ["id", "description", "optionId"], res);
+						await getMany(Dish, req.query, res, "Dishes");
+					});
+				}else{
+					res.status(404).json( { errors:{ diets:[ notFound("Diets") ] }, post:true } );
+				};
 			});
     });
 	}catch(err){

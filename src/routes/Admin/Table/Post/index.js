@@ -17,7 +17,7 @@ router.post("/post_table",
       if(req.query.single){
         res.json(table);
       }else{
-        await getMany(Table, "Table", req.query, res, "Tables");
+        await getMany(Table, req.query, res, "Tables");
       };
     });
   }catch(err){

@@ -1,6 +1,6 @@
 const { Router } = require('express');
 const router = Router();
-const error = require("../../../error");
+const {notFound, unknown, errJSON} = require("../../../error");
 const {Dish, Diet}=require("../../../../db");
 const {getMany, relationGetter}=require("../../../routeFormatter");
 
@@ -12,16 +12,16 @@ router.delete("/delete_dish/:id", async (req,res)=>{
 			if(dish){
 				dish.destroy({force:true})
 				.then(async ()=>{
-					relationGetter(Diet, ["id", "description", "optionId"], res);
-					await getMany(Dish, "Dishes", req.query, res, "Dish");
+					relationGetter(Diet, [ "id", "description", "optionId" ], res);
+					await getMany(Dish, req.query, res, "Dishes");
 				});
 			}else{
-				res.json({errors:{not_found:error.notFound("Dish")}});
+				res.json(errJSON("not_found", notFound("Dish")));
 			};
 		});
 	}catch(err){
 		console.log(err);
-		res.status(500).json({errors:{unknown:error.unknown}});
+		res.status(500).json(errJSON("unknown", unknown));
 	};
 });
 
@@ -38,7 +38,7 @@ router.delete("/delete_dishes", async (req,res)=>{
 		}).then(()=>{res.json({message:"Dishes deleted."})});
 	}catch(err){
 		console.log(err);
-		res.status(500).json({errors:{unknown:error.unknown}});
+		res.status(500).json({errors:{unknown:unknown}});
 	};
 });
 

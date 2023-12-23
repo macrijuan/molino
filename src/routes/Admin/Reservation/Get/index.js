@@ -8,7 +8,7 @@ const { getMany }=require("../../../routeFormatter");
 router.get("/get_reservations", async(req,res)=>{
   try{
     res.locals.data={ attributes:{ exclude:["tableId", "userId", "deletion_code"] } };
-    await getMany(Reservation, "Reservations", req.query, res, "Reservations");
+    await getMany(Reservation, req.query, res, "Reservations");
   }catch(err){
     console.log(err);
     res.status(500).json(errJSON("unknown", unknown));

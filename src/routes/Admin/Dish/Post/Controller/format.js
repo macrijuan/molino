@@ -16,6 +16,7 @@ router.use((req,res,next)=>{
   });
 	nameValidator(req.body.name, res.locals.errors);
 	ingredientsValidator(req.body.ingredients, res.locals.errors);
+  console.log(res.locals.errors);
 	dietsValidator(req.body.diets, res.locals.errors);
 	descriptionValidator(req.body.description, res.locals.errors);
   req.body.price = Number(req.body.price);

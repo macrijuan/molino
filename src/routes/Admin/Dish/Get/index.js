@@ -12,7 +12,7 @@ router.get("/get_dishes", async(req,res)=>{
 			res.ignore=1;
 			res.locals.data.include[0].where={ name:{ [Op.in]:JSON.parse(req.query.diets).data } };
 		};
-		await getMany(Dish, "Dishes", req.query, res, "Dishes");
+		await getMany(Dish, req.query, res, "Dishes");
 	}catch(err){
 		console.log(err);
 		res.status(500).json({errors:{unknown:errors.unknown}});

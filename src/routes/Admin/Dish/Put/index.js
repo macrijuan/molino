@@ -19,7 +19,7 @@ router.put("/update_dish/:id",
 			.then(async svdDish=>{
 				if(svdDish){
 					relationGetter(Diet, [ "id", "description", "optionId" ], res);
-					await getMany(Dish, "Dishes", req.query, res, "Dishes");
+					await getMany(Dish, req.query, res, "Dishes");
 				}else{
 					res.status(500).json("unknown", unknown);
 				};

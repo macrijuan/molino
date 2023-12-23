@@ -1,6 +1,7 @@
 const { Sequelize } = require('sequelize');
 const fs = require('fs');
 const path = require('path');
+const { Console } = require('console');
 require("dotenv").config();
 const {
   LOCAL_DB_USER, LOCAL_DB_PASSWORD, LOCAL_DB_HOST, LOCAL_DB_NAME, 
@@ -8,19 +9,15 @@ const {
   ENVIORMENT
 }=process.env;
 
-console.log( "LOCAL DATA:" );
-console.log( LOCAL_DB_USER, LOCAL_DB_PASSWORD, LOCAL_DB_HOST, LOCAL_DB_NAME );
-console.log( "HOSTED DATA:" );
-console.log( DB_USER, DB_PASSWORD, DB_HOST, DB_NAME );
-console.log( ENVIORMENT );
+console.log( "enviorment:", ENVIORMENT );
 
 let sequelize = ENVIORMENT === "live"
 ? new Sequelize(`postgres://${DB_USER}:${DB_PASSWORD}@${DB_HOST}/${DB_NAME}`, {
-  logging: console.log,//false, //set to console.log to see the raw SQL queries
+  logging: false,//set to console.log to see the raw SQL queries
   native: false, // lets Sequelize know we can use pg-native for ~30% more speed
 })
 : new Sequelize(`postgres://${LOCAL_DB_USER}:${LOCAL_DB_PASSWORD}@${LOCAL_DB_HOST}/${LOCAL_DB_NAME}`, {
-  logging: console.log, //set to console.log to see the raw SQL queries
+  logging: false, //set to console.log to see the raw SQL queries
   native: false, // lets Sequelize know we can use pg-native for ~30% more speed
 });
 
@@ -46,19 +43,20 @@ let entries = Object.entries(sequelize.models);
 let capsEntries = entries.map((entry) => [entry[0][0].toUpperCase() + entry[0].slice(1), entry[1]]);
 sequelize.models = Object.fromEntries(capsEntries);
 
-const { Admin, Diet, Dish, Inventory, User, Reservation, Table, Option } = sequelize.models;
+const { Diet, Dish, User, Reservation, Table } = sequelize.models;
 
 Reservation.hasOne( User );
-User.hasMany( Reservation );
 
+
+User.hasMany( Reservation );
 Table.hasMany( Reservation );
-Reservation.hasOne( Table, {foreignKey:"ticket reserve", as:"ticket reserve"} );
+
+
+Reservation.hasOne( Table, { foreignKey:"ticket reserve", as:"ticket reserve" } );
+
 
 Diet.belongsToMany( Dish, { through:"dish_diets", timestamps:false } );
 Dish.belongsToMany( Diet, { through:"dish_diets", timestamps:false } );
-
-// Check the exisisting models: uncoment line below.
-// console.log(sequelize.models);;
 
 module.exports = {
   ...sequelize.models, // para poder importar los modelos así: const { Product, User } = require('./db.js');

@@ -20,7 +20,7 @@ router.put("/update_admin_user/:id",
           admin.update(req.body)
           .then( update=>update.save()
             .then( async ()=>{
-              await getMany(Admin, "Admins", req.query, res, "Administrators");
+              await getMany(Admin, req.query, res, "Administrators");
             } ) 
           );
         }else{
@@ -56,7 +56,7 @@ router.put("/update_admin_status/:id",
             if(req.query.single==="t"){
               res.json(admin);
             }else{
-              await getMany(Admin, "Admin", req.query, res, "Administrators");
+              await getMany(Admin, req.query, res, "Administrators");
             };
           });
         }else{

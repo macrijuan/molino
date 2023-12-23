@@ -36,14 +36,14 @@ function ingredientsValidator(ingrs, errors, isUpdate){
       !ingrs.data.length
       ){ errors.ingredients.push(isMandatory("Ingredients"));return;};
     let a = 0;
-    while(a<ingrs.length){
+    while(a<ingrs.data.length){
       if(typeof ingrs.data[a] !== "string") {errors.ingredients = [wrongDataType]; return;};
       if(ingrs.data[a].length>30 || ingrs.data[a].length<1) errors.ingredients.push(wrongLengthBetweenArr("ingredient", 2, 30, ingrs.data[a]));
-      if(!(/^.[a-zà-ÿ ]{1,30}$/.test(ingrs.data[a]))) errors.ingredients.push(wrongCharType("ingredient", "letters and spaces", ingrs.data[a]));
+      if(!(/^.[a-zà-ÿ ]{1,30}$/.test(ingrs.data[a]))) {errors.ingredients.push(wrongCharType("ingredient", "letters and spaces", ingrs.data[a]));}
       if(ingrs.data.filter(e=>e===ingrs.data[a]).length>1)errors.ingredients.push(copyedData(ingrs.data[a]));
       a++;
     };
-  }
+  };
   if(!errors.ingredients.length)delete errors.ingredients;
 };
 

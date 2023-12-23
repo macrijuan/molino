@@ -3,3 +3,5 @@ node_modules
 .eslintrc.json
 .env
 package-lock.json
+testing.js
+test.js

@@ -5,6 +5,6 @@ const getInventory = require("./Get");
 const putInventory = require("./Put");
 const deleteInventory = require("./Delete");
 
-router.use("/inventory", postInventory, getInventory, putInventory, deleteInventory);
+router.use("/inventory",  postInventory, getInventory, putInventory, deleteInventory);
 
 module.exports = router;

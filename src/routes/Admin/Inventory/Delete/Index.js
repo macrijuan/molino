@@ -12,7 +12,7 @@ router.delete("/delete_inventory/:id",
         if(inventory){
           inventory.destroy({force:true})
           .then(async ()=>{
-            await getMany(Inventory, "Inventory", req.query, res, "Inventory's elements");
+            await getMany(Inventory, req.query, res, "Inventory's elements");
           });
         }else res.json(errJSON("not_found", notFound("Inventory's element")));
       });

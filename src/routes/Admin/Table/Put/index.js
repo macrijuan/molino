@@ -21,7 +21,7 @@ router.put("/update_table/:id",
 					if(req.query.single==="t"){
 						res.json(table);
 					}else{
-						await getMany(Table, "Table", req.query, res, "Table");
+						await getMany(Table, req.query, res, "Table");
 					};
 				});
 			}else{

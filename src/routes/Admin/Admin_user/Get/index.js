@@ -1,6 +1,6 @@
 const {Router}=require("express");
 const router = Router();
-const {Admin}=require("../../../../db");
+const {Admin, Option}=require("../../../../db");
 const {Op}=require("sequelize");
 const {notFound, errJSON}=require("../../../error");
 const { getMany }=require("../../../routeFormatter");
@@ -12,7 +12,7 @@ router.get("/get_admin_users", async(req,res)=>{
     },
     where:{email:{[Op.notLike]:"superadmin@example.com"}},
   };
-  await getMany(Admin, "Admins", req.query, res, "Administrators");
+  await getMany(Admin, req.query, res, "Administrators");
 });
 
 router.get("/get_admin_user/:id", async(req,res)=>{

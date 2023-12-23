@@ -1,7 +1,7 @@
 node_modules
+package-lock.json
 .npmrc
 .eslintrc.json
 .env
-package-lock.json
-testing.js
-test.js
+
+

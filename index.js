@@ -279,8 +279,8 @@ if(process.env.ENVIORMENT==="live"){
     });
   }).catch(err=>{console.log(err)});
 }else{
-  const setForce = true;
-  // const setForce = false;
+  // const setForce = true;
+  const setForce = false;
   conn.sync({ force: setForce }).then(async() => {
     reFillDB(setForce).then(()=>{
       server.listen(3001, () => {

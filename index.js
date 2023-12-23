@@ -1,4 +1,6 @@
 const server = require('./src/app.js');
+const router = server.Router();
+const serverless = require("serverless-http");
 const { conn } = require('./src/db.js');
 const { User, Admin, Dish, Diet, Inventory, Reservation, Table, Option }=require('./src/db');
 
@@ -300,3 +302,5 @@ if(process.env.ENVIORMENT==="live"){
     });
   }).catch(err=>{console.log(err)});
 };
+
+module.exports.handler = serverless(server);
